@@ -1,0 +1,27 @@
+{"properties": [
+  {
+    "name": "naver.client.id",
+    "type": "java.lang.String",
+    "description": "A description for 'naver.client.id'"
+  },
+  {
+    "name": "naver.client.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'naver.client.secret'"
+  },
+  {
+    "name": "naver.captcha.url.key",
+    "type": "java.lang.String",
+    "description": "A description for 'naver.captcha.url.key'"
+  },
+  {
+    "name": "naver.captcha.url.image",
+    "type": "java.lang.String",
+    "description": "A description for 'naver.captcha.url.image'"
+  },
+  {
+    "name": "naver.captcha.url.validation",
+    "type": "java.lang.String",
+    "description": "A description for 'naver.captcha.url.validation'"
+  }
+]}
