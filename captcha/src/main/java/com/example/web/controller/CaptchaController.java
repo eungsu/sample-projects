@@ -37,7 +37,7 @@ public class CaptchaController {
 				.body(resource);
 	}
 	
-	@PostMapping("/register")
+	@PostMapping("/confirm")
 	public ResponseEntity<Map<String, Object>> register(@RequestParam("key") String key, 
 			@RequestParam("value") String value) throws IOException {
 		return ResponseEntity.ok()
