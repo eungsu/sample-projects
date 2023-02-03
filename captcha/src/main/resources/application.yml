@@ -9,8 +9,8 @@ spring:
       
 naver:
   client:
-    id: 77PI9mBc0SQ6HnSgeZLm
-    secret: HOMsU8xqSR
+    id: xxxxxxxx          #네이버 애플리케이션 클라이언트 아이디을 입력합니다.
+    secret: xxxxxxxx      #네이버 애플리케이션 클라이언트 시크릿을 입력합니다.
   captcha:
     url:
       key: https://openapi.naver.com/v1/captcha/nkey?code=0
