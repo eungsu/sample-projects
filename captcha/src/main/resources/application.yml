@@ -10,7 +10,7 @@ spring:
 naver:
   client:
     id: 77PI9mBc0SQ6HnSgeZLm
-    secret: uj0l1xgxTq
+    secret: HOMsU8xqSR
   captcha:
     url:
       key: https://openapi.naver.com/v1/captcha/nkey?code=0

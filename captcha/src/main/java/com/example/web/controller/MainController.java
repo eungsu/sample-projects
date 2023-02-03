@@ -2,12 +2,10 @@ package com.example.web.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class MainController {
-
+	
 	@GetMapping("/")
 	public String home() {
 		return "home";
@@ -18,5 +16,8 @@ public class MainController {
 		return "register-form";
 	}
 	
-	
+	@GetMapping("/registered")
+	public String completed() {
+		return "completed";
+	}
 }
