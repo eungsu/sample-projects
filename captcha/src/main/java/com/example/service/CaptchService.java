@@ -57,18 +57,16 @@ public class CaptchService {
 	
 	/**
 	 * 캡차 이미지 요청 및 캡차 이미지 입력값 검증에 활용되는 일회용 캡차 키를 제공한다.
-	 * @return 캡차 키
+	 * @return 캡차 키 정보, {key: 캡차이미지키값}
 	 * @throws IOException
 	 */
-	public String captchaKey() throws IOException {
+	public Map<String, String>  captchaKey() throws IOException {
 		try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
 			return httpClient.execute(httpRequest(captchaKeyUrl), response -> {
 				String json = EntityUtils.toString(response.getEntity());
 				
 				ObjectMapper objectMapper = new ObjectMapper();
-				Map<String, String> resultMap = objectMapper.readValue(json, new TypeReference<Map<String, String>>() {});
-				
-				return resultMap.get("key");
+				return objectMapper.readValue(json, new TypeReference<Map<String, String>>() {});
 			});
 		}
 	}
@@ -91,7 +89,7 @@ public class CaptchService {
 	 * 캡차 키와 사용자 입력값을 전달받아서 입력값을 검증하고 그 결과를 반환한다.
 	 * @param captchaKey 캡차 키
 	 * @param captchaValue 사용자가 입력한 캡차 이미지 글자값
-	 * @return 검증결과
+	 * @return 검증결과, {result:불린값, responseTime:응답시간}
 	 * @throws IOException
 	 */
 	public Map<String, Object> checkCaptcha(String captchaKey, String captchaValue) throws IOException {
