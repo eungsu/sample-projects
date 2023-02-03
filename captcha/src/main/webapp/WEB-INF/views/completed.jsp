@@ -12,7 +12,7 @@
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 	<div class="container">
 		<ul class="navbar-nav me-auto">
-			<li class="nav-item"><a class="nav-link active" href="/">홈</a></li>
+			<li class="nav-item"><a class="nav-link" href="/">홈</a></li>
 		</ul>
 		<ul class="navbar-nav">
 			<li class="nav-item"><a class="nav-link" href="/register">회원가입</a></li>
@@ -23,8 +23,7 @@
 	<div class="row">
 		<div class="col-12">
 			<h1>샘플 애플리케이션</h1>
-			<p>네이버 캡차를 이용한 사용자 체크예제 입니다.</p>
-			<p>회원가입 메뉴를 클릭해서 확인해보세요.</p>
+			<p>회원가입이 완료되었습니다.</p>
 		</div>
 	</div>
 </div>

@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class MainController {
-
+	
 	@GetMapping("/")
 	public String home() {
 		return "home";
@@ -14,5 +14,10 @@ public class MainController {
 	@GetMapping("/register")
 	public String registerform() {
 		return "register-form";
+	}
+	
+	@GetMapping("/registered")
+	public String completed() {
+		return "completed";
 	}
 }
