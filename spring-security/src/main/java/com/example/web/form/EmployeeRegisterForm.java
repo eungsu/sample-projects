@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class EmployeeRegisterForm {
 
-	private String authority;
+	private String auth;
 	private String id;
 	private String password;
 	private String name;

@@ -27,7 +27,7 @@ public class EmployeeDetailsServiceImpl implements UserDetailsService {
 			throw new UsernameNotFoundException("직원정보가 존재하지 않습니다.");
 		}
 		
-		Collection<? extends GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(employee.getAuthority()));
+		Collection<? extends GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(employee.getAuth()));
 		return new CustomUserDetails(employee.getId(), employee.getEncryptPassword(), employee.getName(), authorities);
 	}
 }

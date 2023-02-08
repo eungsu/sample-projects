@@ -1,33 +1,44 @@
 package com.example.security;
 
+import java.util.Map;
+
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-	private UserDetailsServiceImpl userDetailsService;
-	private EmployeeDetailsServiceImpl employeeDetailsService;
-	private PasswordEncoder passwordEncoder;
+	private Map<String, UserDetailsService> detailsServiceMap;
+	private PasswordEncoder passwordEncoder;;
 	
-	public CustomAuthenticationProvider(UserDetailsServiceImpl userDetailsService, 
-			EmployeeDetailsServiceImpl employeeDetailsService,
-			PasswordEncoder passwordEncoder) {
-		this.userDetailsService = userDetailsService;
-		this.employeeDetailsService = employeeDetailsService;
+	public CustomAuthenticationProvider(Map<String, UserDetailsService> detailsServiceMap, PasswordEncoder passwordEncoder) {
+		this.detailsServiceMap = detailsServiceMap;
 		this.passwordEncoder = passwordEncoder;
 	}
 	
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		CustomAuthenticationToken customAuthentication = (CustomAuthenticationToken) authentication;
-		System.out.println(customAuthentication.getName());
-		System.out.println(customAuthentication.getCredentials());
-		System.out.println(customAuthentication.getUserType());
+		String username = customAuthentication.getName();
+		String password = customAuthentication.getCredentials().toString();
+		String userType = customAuthentication.getUserType();
 		
+		UserDetailsService detailsService = detailsServiceMap.get(userType);
 		
-		return null;
+		UserDetails userDetails = detailsService.loadUserByUsername(username);
+		if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+			throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+		}
+
+		customAuthentication = new CustomAuthenticationToken(username, password, userDetails.getAuthorities());
+		customAuthentication.setAuthenticated(true);
+		customAuthentication.setDetails(userDetails);
+		
+		return customAuthentication;
 	}
 	
 	@Override

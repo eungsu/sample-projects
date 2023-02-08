@@ -28,11 +28,11 @@
 					<label class="form-label">사용자 구분</label>
 					<div>
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="radio" name="userType" value="USER" checked>
+							<input class="form-check-input" type="radio" name="userType" value="user" checked>
 							<label class="form-check-label">사용자</label>
 						</div>
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="radio" name="userType" value="EMP" >
+							<input class="form-check-input" type="radio" name="userType" value="employee" >
 							<label class="form-check-label">직원</label>
 						</div>
 					</div>

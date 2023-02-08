@@ -28,11 +28,11 @@
 					<label class="form-label">접근 권한</label>
 					<div>
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="radio" name="authority" value="ROLE_EMP" checked>
+							<input class="form-check-input" type="radio" name="auth" value="ROLE_EMP" checked>
 							<label class="form-check-label">직원</label>
 						</div>
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="radio" name="authority" value="ROLE_ADMIN" >
+							<input class="form-check-input" type="radio" name="auth" value="ROLE_ADMIN" >
 							<label class="form-check-label">관리자</label>
 						</div>
 					</div>

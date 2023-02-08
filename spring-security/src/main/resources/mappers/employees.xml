@@ -28,21 +28,21 @@
 			encrypt_password as "encryptPassword",
 			name as "name",
 			email as "email",
-			authority as "authority",
+			auth as "auth",
 			dept_no as deptNo,
 			position_no as positionNo,
 			created_date as "createdDate",
 			updated_date as "updatedDate"
 		from
-			sample_users
+			sample_employees
 		where
 			id = #{value}
 	</select>
 	
 	<insert id="insertEmployee" parameterType="com.example.vo.Employee">
-		insert into sample_users
-		(id, encrypt_password, name, email, authority, dept_no, position_no, created_date, updated_date)
+		insert into sample_employees
+		(id, encrypt_password, name, email, auth, dept_no, position_no, created_date, updated_date)
 		values
-		(#{id}, #{encryptPassword}, #{name}, #{email}, #{authority}, #{deptNo}, #{positionNo}, now(), now())
+		(#{id}, #{encryptPassword}, #{name}, #{email}, #{auth}, #{deptNo}, #{positionNo}, now(), now())
 	</insert>
 </mapper>

@@ -14,7 +14,7 @@ public class Employee {
 	private String type;
 	private String name;
 	private String email;
-	private String authority;
+	private String auth;
 	private int deptNo;
 	private int positionNo;
 	private Date createdDate;
