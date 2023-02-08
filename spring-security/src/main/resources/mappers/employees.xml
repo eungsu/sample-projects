@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.EmployeeMapper">
+	
+	<select id="getAllDepartments" resultType="com.example.vo.Department">
+		select
+			dept_no as no,
+			dept_name as name
+		from
+			sample_departments
+		order by
+			dept_no asc
+	</select>
+	
+	<select id="getAllPositions" resultType="com.example.vo.Position">
+		select
+			position_no as no,
+			position_name as name
+		from
+			sample_positions
+		order by
+			position_no
+	</select>
+
 	<select id="getEmployeeById" parameterType="string" resultType="com.example.vo.Employee">
 		select
 			id as "id",
@@ -8,6 +29,8 @@
 			name as "name",
 			email as "email",
 			authority as "authority",
+			dept_no as deptNo,
+			position_no as positionNo,
 			created_date as "createdDate",
 			updated_date as "updatedDate"
 		from
@@ -18,8 +41,8 @@
 	
 	<insert id="insertEmployee" parameterType="com.example.vo.Employee">
 		insert into sample_users
-		(id, encrypt_password, name, email, authority, created_date, updated_date)
+		(id, encrypt_password, name, email, authority, dept_no, position_no, created_date, updated_date)
 		values
-		(#{id}, #{encryptPassword}, #{name}, #{email}, #{authority}, now(), now())
+		(#{id}, #{encryptPassword}, #{name}, #{email}, #{authority}, #{deptNo}, #{positionNo}, now(), now())
 	</insert>
 </mapper>

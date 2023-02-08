@@ -8,4 +8,5 @@ import com.example.vo.User;
 public interface UserMapper {
 
 	User getUserById(String id);
+	void insertUser(User user);
 }

@@ -12,18 +12,8 @@
 <title>샘플 애플리케이션</title>
 </head>
 <body>
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-	<div class="container">
-		<ul class="navbar-nav me-auto">
-			<li class="nav-item"><a class="nav-link" href="/">홈</a></li>
-		</ul>
-		<ul class="navbar-nav">
-			<li class="nav-item"><a class="nav-link active" href="/login">로그인</a></li>
-			<li class="nav-item"><a class="nav-link" href="/register">회원가입</a></li>
-			<li class="nav-item"><a class="nav-link" href="/logout">로그아웃</a></li>
-		</ul>
-	</div>
-</nav>
+<c:set var="menu" value="login" />
+<%@ include file="common/navbar.jsp" %>
 <div class="container">
 	<div class="row">
 		<div class="col-12">
@@ -48,8 +38,8 @@
 					</div>
 				</div>
 				<div class="mb-2">
-					<label class="form-label">이메일</label>
-					<input type="text" class="form-control" name="email" />
+					<label class="form-label">아이디</label>
+					<input type="text" class="form-control" name="id" />
 				</div>
 				<div class="mb-2">
 					<label class="form-label">비밀번호</label>

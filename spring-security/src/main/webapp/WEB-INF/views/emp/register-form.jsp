@@ -12,44 +12,34 @@
 <title>샘플 애플리케이션</title>
 </head>
 <body>
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-	<div class="container">
-		<ul class="navbar-nav me-auto">
-			<li class="nav-item"><a class="nav-link" href="/">홈</a></li>
-		</ul>
-		<ul class="navbar-nav">
-			<li class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
-			<li class="nav-item"><a class="nav-link active" href="/register">회원가입</a></li>
-			<li class="nav-item"><a class="nav-link" href="/logout">로그아웃</a></li>
-		</ul>
-	</div>
-</nav>
+<c:set var="menu" value="register" />
+<%@ include file="../common/navbar.jsp" %>
 <div class="container">
 	<div class="row">
 		<div class="col-12">
-			<h1>회원가입</h1>
+			<h1>직원으로 가입하기</h1>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-6">
-			<p>회원정보를 입력하세요</p>
+			<p>직원정보를 입력하세요</p>
 			<form id="form-register" class="border bg-light p-3" method="post" action="register">
 				<div class="mb-3">
-					<label class="form-label">사용자 구분</label>
+					<label class="form-label">접근 권한</label>
 					<div>
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="radio" name="userType" value="USER" checked>
-							<label class="form-check-label">사용자</label>
+							<input class="form-check-input" type="radio" name="authority" value="ROLE_EMP" checked>
+							<label class="form-check-label">직원</label>
 						</div>
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="radio" name="userType" value="EMP" >
-							<label class="form-check-label">직원</label>
+							<input class="form-check-input" type="radio" name="authority" value="ROLE_ADMIN" >
+							<label class="form-check-label">관리자</label>
 						</div>
 					</div>
 				</div>
 				<div class="mb-2">
-					<label class="form-label">이메일</label>
-					<input type="text" class="form-control" name="email" />
+					<label class="form-label">아이디</label>
+					<input type="text" class="form-control" name="id" />
 				</div>
 				<div class="mb-2">
 					<label class="form-label">비밀번호</label>
@@ -59,8 +49,28 @@
 					<label class="form-label">이름</label>
 					<input type="text" class="form-control" name="name" />
 				</div>
+				<div class="mb-2">
+					<label class="form-label">이메일</label>
+					<input type="text" class="form-control" name="email" />
+				</div>
+				<div class="mb-2">
+					<label class="form-label">소속부서</label>
+					<select class="form-select" name="deptNo">
+						<c:forEach var="dept" items="${depts }">
+							<option value="${dept.no }"> ${dept.name }</option>
+						</c:forEach>
+					</select>
+				</div>
+				<div class="mb-2">
+					<label class="form-label">직위</label>
+					<select class="form-select" name="positionNo">
+						<c:forEach var="position" items="${positions }">
+							<option value="${position.no }"> ${position.name }</option>
+						</c:forEach>
+					</select>
+				</div>
 				<div class="text-end">
-					<button type="submit" class="btn btn-primary">회원가입</button>
+					<button type="submit" class="btn btn-primary">직원가입</button>
 				</div>
 			</form>			
 		</div>

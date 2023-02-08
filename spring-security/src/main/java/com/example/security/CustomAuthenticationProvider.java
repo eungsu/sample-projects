@@ -1,25 +1,38 @@
 package com.example.security;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
+public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-	@Override
-	protected void additionalAuthenticationChecks(UserDetails userDetails,
-			UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+	private UserDetailsServiceImpl userDetailsService;
+	private EmployeeDetailsServiceImpl employeeDetailsService;
+	private PasswordEncoder passwordEncoder;
+	
+	public CustomAuthenticationProvider(UserDetailsServiceImpl userDetailsService, 
+			EmployeeDetailsServiceImpl employeeDetailsService,
+			PasswordEncoder passwordEncoder) {
+		this.userDetailsService = userDetailsService;
+		this.employeeDetailsService = employeeDetailsService;
+		this.passwordEncoder = passwordEncoder;
 	}
-
+	
 	@Override
-	protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication)
-			throws AuthenticationException {
-		
+	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+		CustomAuthenticationToken customAuthentication = (CustomAuthenticationToken) authentication;
+		System.out.println(customAuthentication.getName());
+		System.out.println(customAuthentication.getCredentials());
+		System.out.println(customAuthentication.getUserType());
 		
 		
 		return null;
 	}
-
+	
+	@Override
+	public boolean supports(Class<?> authentication) {
+		return CustomAuthenticationToken.class.isAssignableFrom(authentication);
+	}
 	
 }

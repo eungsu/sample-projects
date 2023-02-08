@@ -11,25 +11,16 @@
 <title>샘플 애플리케이션</title>
 </head>
 <body>
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-	<div class="container">
-		<ul class="navbar-nav me-auto">
-			<li class="nav-item"><a class="nav-link" href="/">홈</a></li>
-		</ul>
-		<ul class="navbar-nav">
-			<li class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
-			<li class="nav-item"><a class="nav-link active" href="/register">회원가입</a></li>
-			<li class="nav-item"><a class="nav-link" href="/logout">로그아웃</a></li>
-		</ul>
-	</div>
-</nav>
+<c:set var="menu" value="register" />
+<%@ include file="../common/navbar.jsp" %>
 <div class="container">
 	<div class="row">
 		<div class="col-12">
 			<h1>샘플 애플리케이션</h1>
-			<p>회원가입이 완료되었습니다.</p>
+			<p>직원 등록이 완료되었습니다.</p>
 		</div>
 	</div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

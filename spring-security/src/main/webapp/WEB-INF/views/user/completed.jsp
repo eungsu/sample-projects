@@ -11,14 +11,13 @@
 <title>샘플 애플리케이션</title>
 </head>
 <body>
-<c:set var="menu" value="home" />
-<%@ include file="common/navbar.jsp" %>
+<c:set var="menu" value="register" />
+<%@ include file="../common/navbar.jsp" %>
 <div class="container">
 	<div class="row">
 		<div class="col-12">
 			<h1>샘플 애플리케이션</h1>
-			<p>스프링 시큐리티로 부가적인 로그인 정보가 전달되는 로그인 샘플 프로젝트입니다.</p>
-			<p>회원가입 후 로그인 메뉴를 클릭해서 확인해보세요.</p>
+			<p>사용자 등록이 완료되었습니다.</p>
 		</div>
 	</div>
 </div>

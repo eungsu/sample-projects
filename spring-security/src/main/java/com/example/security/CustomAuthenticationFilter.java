@@ -1,5 +1,7 @@
 package com.example.security;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,19 +18,13 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 		if (!request.getMethod().equals("POST")) {
 			throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
 		}
-		String username = obtainUsername(request);
-		username = (username != null) ? username : "";
-		username = username.trim();
-		String password = obtainPassword(request);
-		password = (password != null) ? password : "";
+		String id = request.getParameter("id");
+		String password = request.getParameter("password");
 		String userType = request.getParameter("userType");
-		userType = (userType != null) ? userType : "USER";
 		
-		CustomAuthentication authRequest = new CustomAuthentication(username, password);
-		authRequest.setUserType(userType);
-		setDetails(request, authRequest);
+		CustomAuthenticationToken authenticationToken = new CustomAuthenticationToken(id, password, List.of());
+		authenticationToken.setUserType(userType);
 		
-		System.out.println("-------------------------------");
-		return this.getAuthenticationManager().authenticate(authRequest);
+		return this.getAuthenticationManager().authenticate(authenticationToken);
 	}
 }

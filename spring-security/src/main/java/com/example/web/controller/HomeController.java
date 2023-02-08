@@ -12,16 +12,7 @@ public class HomeController {
 		return "home";
 	}
 	
-	@GetMapping("/register")
-	public String form() {
-		return "register-form";
-	}
 	
-	@PostMapping("/register")
-	public String register() {
-		
-		return "redirect:/registered";
-	}
 	
 	@GetMapping("/login")
 	public String login() {

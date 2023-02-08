@@ -12,7 +12,7 @@ import com.example.mapper.UserMapper;
 import com.example.vo.User;
 
 @Controller
-public class CustomUserDetailsServiceForUser implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
 	UserMapper userMapper;
@@ -21,9 +21,9 @@ public class CustomUserDetailsServiceForUser implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = userMapper.getUserById(username);
 		if (user == null) {
-			throw new UsernameNotFoundException("사용자가 존재하지 않습니다.");
+			throw new UsernameNotFoundException("사용자정보가 존재하지 않습니다.");
 		}
 		
-		return new CustomUserDetails(user.getId(), user.getEncryptPassword(), user.getType(), user.getName(), List.of());
+		return new CustomUserDetails(user.getId(), user.getEncryptPassword(), user.getName(), List.of());
 	}
 }
