@@ -10,5 +10,14 @@ insert into sample_positions values(104, '차장');
 insert into sample_positions values(105, '부장');
 insert into sample_positions values(106, '임원');
 
-insert into sample_employees()
-values('kim', '$2a$10$HBHJuiu69vd.G2pLa8Erd.NiFPgAc5VYg1uXXd.MOvcmmzpOxcRpe', '김유신', 'kim@gmail.com', )
+insert into sample_employees
+values('emp1', '$2a$10$HBHJuiu69vd.G2pLa8Erd.NiFPgAc5VYg1uXXd.MOvcmmzpOxcRpe', '직원1', 'emp1@gmail.com', 'ROLE_EMPLOYEE', 1000, 101, now(), now());
+
+insert into sample_employees
+values('emp2', '$2a$10$HBHJuiu69vd.G2pLa8Erd.NiFPgAc5VYg1uXXd.MOvcmmzpOxcRpe', '직원2', 'emp1@gmail.com', 'ROLE_EMPLOYEE', 1000, 101, now(), now());
+
+insert into sample_employees
+values('admin1', '$2a$10$HBHJuiu69vd.G2pLa8Erd.NiFPgAc5VYg1uXXd.MOvcmmzpOxcRpe', '관리자1', 'emp1@gmail.com', 'ROLE_ADMIN', 1000, 104, now(), now());
+
+insert into sample_employees
+values('admin2', '$2a$10$HBHJuiu69vd.G2pLa8Erd.NiFPgAc5VYg1uXXd.MOvcmmzpOxcRpe', '관리자2', 'emp1@gmail.com', 'ROLE_ADMIN', 1000, 105, now(), now());

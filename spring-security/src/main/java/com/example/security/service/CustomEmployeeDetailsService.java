@@ -1,4 +1,4 @@
-package com.example.security;
+package com.example.security.service;
 
 import java.util.Collection;
 import java.util.List;
@@ -12,10 +12,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.mapper.EmployeeMapper;
+import com.example.security.vo.CustomUserDetails;
 import com.example.vo.Employee;
 
 @Service
-public class EmployeeDetailsServiceImpl implements UserDetailsService {
+public class CustomEmployeeDetailsService implements UserDetailsService {
 
 	@Autowired
 	EmployeeMapper employeeMapper;
@@ -28,6 +29,7 @@ public class EmployeeDetailsServiceImpl implements UserDetailsService {
 		}
 		
 		Collection<? extends GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(employee.getAuth()));
+		
 		return new CustomUserDetails(employee.getId(), employee.getEncryptPassword(), employee.getName(), authorities);
 	}
 }

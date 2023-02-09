@@ -12,13 +12,16 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.example.security.service.CustomEmployeeDetailsService;
+import com.example.security.service.CustomUserDetailsService;
+
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
-	private UserDetailsServiceImpl userDetailsService;
+	private CustomUserDetailsService userDetailsService;
 	@Autowired
-	private EmployeeDetailsServiceImpl employeeDetailsService;
+	private CustomEmployeeDetailsService employeeDetailsService;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 

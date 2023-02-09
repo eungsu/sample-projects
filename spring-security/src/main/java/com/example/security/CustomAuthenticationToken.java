@@ -2,21 +2,21 @@ package com.example.security;
 
 import java.util.Collection;
 
-import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
-public class CustomAuthenticationToken extends AbstractAuthenticationToken {
-
-	private static final long serialVersionUID = 1L;
+public class CustomAuthenticationToken extends UsernamePasswordAuthenticationToken {
 	
-	private String id;
-	private String password;
+	private static final long serialVersionUID = 1L;
+
 	private String userType;
 	
-	public CustomAuthenticationToken(String id, String password, Collection<? extends GrantedAuthority> authorities) {
-		super(authorities);
-		this.id = id;
-		this.password = password;
+	public CustomAuthenticationToken(Object principal, Object credentials) {
+		super(principal, credentials);
+	}
+	
+	public CustomAuthenticationToken(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities) {
+		super(principal, credentials, authorities);
 	}
 	
 	public String getUserType() {
@@ -25,15 +25,5 @@ public class CustomAuthenticationToken extends AbstractAuthenticationToken {
 	
 	public void setUserType(String userType) {
 		this.userType = userType;
-	}
-
-	@Override
-	public Object getCredentials() {
-		return password;
-	}
-
-	@Override
-	public Object getPrincipal() {
-		return id;
-	}
+	}	
 }

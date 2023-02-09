@@ -1,4 +1,4 @@
-package com.example.security;
+package com.example.security.service;
 
 import java.util.List;
 
@@ -9,10 +9,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 
 import com.example.mapper.UserMapper;
+import com.example.security.vo.CustomUserDetails;
 import com.example.vo.User;
 
 @Controller
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
 	@Autowired
 	UserMapper userMapper;

@@ -17,7 +17,7 @@
 					</ul>
 				</li>
 			</sec:authorize>
-			<sec:authorize access="hasRole('EMPLOYEE')">
+			<sec:authorize access="hasRole('ROLE_EMPLOYEE')">
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle ${menu eq 'emp' ? 'active' : '' }" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 						직원
@@ -29,7 +29,7 @@
 					</ul>
 				</li>
 			</sec:authorize>
-			<sec:authorize access="hasRole('ADMIN')">
+			<sec:authorize access="hasRole('ROLE_ADMIN')">
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle ${menu eq 'emp' ? 'active' : '' }" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 						관리자
@@ -43,7 +43,7 @@
 			</sec:authorize>
 		</ul>
 		<sec:authorize access="isAuthenticated()">
-			<span class="navbar-text"><strong class="text-white"><sec:authentication property="details.name"/></strong> 님 환영합니다.</span>
+			<span class="navbar-text"><strong class="text-white"><sec:authentication property="principal.name"/></strong> 님 환영합니다.</span>
 		</sec:authorize>
 		<ul class="navbar-nav">
 			<sec:authorize access="!isAuthenticated()">

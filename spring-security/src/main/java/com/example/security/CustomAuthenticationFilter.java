@@ -1,7 +1,5 @@
 package com.example.security;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,12 +17,11 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 			throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
 		}
 		
-		
 		String id = request.getParameter("id");
 		String password = request.getParameter("password");
 		String userType = request.getParameter("userType");
 		
-		CustomAuthenticationToken authenticationToken = new CustomAuthenticationToken(id, password, List.of());
+		CustomAuthenticationToken authenticationToken = new CustomAuthenticationToken(id, password);
 		authenticationToken.setUserType(userType);
 		
 		return this.getAuthenticationManager().authenticate(authenticationToken);
