@@ -3,12 +3,12 @@
 <mapper namespace="com.example.mapper.UserMapper">
 	<select id="getUserById" parameterType="string" resultType="com.example.vo.User">
 		select
-			id as "id",
-			encrypt_password as "encryptPassword",
-			name as "name",
-			email as "email",
-			created_date as "createdDate",
-			updated_date as "updatedDate"
+			id as id,
+			encrypt_password as encryptPassword,
+			name as name,
+			email as email,
+			created_date as createdDate,
+			updated_date as updatedDate
 		from
 			sample_users
 		where

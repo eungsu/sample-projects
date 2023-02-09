@@ -9,3 +9,6 @@ insert into sample_positions values(103, '과장');
 insert into sample_positions values(104, '차장');
 insert into sample_positions values(105, '부장');
 insert into sample_positions values(106, '임원');
+
+insert into sample_employees()
+values('kim', '$2a$10$HBHJuiu69vd.G2pLa8Erd.NiFPgAc5VYg1uXXd.MOvcmmzpOxcRpe', '김유신', 'kim@gmail.com', )

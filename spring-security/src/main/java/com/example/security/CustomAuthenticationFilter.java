@@ -18,6 +18,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 		if (!request.getMethod().equals("POST")) {
 			throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
 		}
+		
+		
 		String id = request.getParameter("id");
 		String password = request.getParameter("password");
 		String userType = request.getParameter("userType");

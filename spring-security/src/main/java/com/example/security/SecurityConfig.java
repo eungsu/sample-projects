@@ -28,6 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.csrf().disable()
 		.authorizeHttpRequests()
 		.antMatchers("/", "/user/register", "/user/registered", "/emp/register", "/emp/registered", "/login", "/logout").permitAll()
+		.antMatchers("/h2-console/**").permitAll()
 		.antMatchers("/emp/**").hasRole("EMPLOYEE")
 		.antMatchers("/emp/admin/**").hasRole("ADMIN")
 		.anyRequest().authenticated()
@@ -43,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.and()
 		.addFilter(getFilter());
 		
+		http.headers().frameOptions().disable();
 	}
 	
 	@Override

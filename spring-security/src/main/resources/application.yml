@@ -4,7 +4,7 @@ server:
 logging:
   level:
     '[com.example.mapper]': trace
-  
+    
 spring:
   mvc:
     view:
@@ -14,3 +14,4 @@ spring:
 mybatis:
   mapper-locations:
   - mappers/*.xml
+  

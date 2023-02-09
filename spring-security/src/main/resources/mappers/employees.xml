@@ -24,15 +24,15 @@
 
 	<select id="getEmployeeById" parameterType="string" resultType="com.example.vo.Employee">
 		select
-			id as "id",
-			encrypt_password as "encryptPassword",
-			name as "name",
-			email as "email",
-			auth as "auth",
+			id as id,
+			encrypt_password as encryptPassword,
+			name as name,
+			email as email,
+			auth as auth,
 			dept_no as deptNo,
 			position_no as positionNo,
-			created_date as "createdDate",
-			updated_date as "updatedDate"
+			created_date as createdDate,
+			updated_date as updatedDate
 		from
 			sample_employees
 		where
