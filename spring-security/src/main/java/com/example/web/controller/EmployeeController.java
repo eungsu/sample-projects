@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.security.AuthenticatedUser;
+import com.example.security.vo.LoginUser;
 import com.example.service.EmployeeService;
 import com.example.web.form.EmployeeRegisterForm;
 
@@ -16,6 +18,13 @@ public class EmployeeController {
 
 	@Autowired
 	private EmployeeService employeeService;
+	
+	@GetMapping("/home")
+	public String home(@AuthenticatedUser LoginUser loginUser, Model model) {
+		model.addAttribute("id", loginUser.getId());
+		model.addAttribute("name", loginUser.getName());
+		return "emp/home";
+	}
 	
 	@GetMapping("/register")
 	public String form(Model model) {

@@ -38,12 +38,12 @@
 					</div>
 				</div>
 				<div class="mb-2">
-					<label class="form-label">아이디</label>
+					<label class="form-label">아이디(user1, user2, emp1, emp2, admin1, admin2)</label>
 					<input type="text" class="form-control" name="id" />
 				</div>
 				<div class="mb-2">
 					<label class="form-label">비밀번호</label>
-					<input type="password" class="form-control" name="password" />
+					<input type="password" class="form-control" name="password" value="Zxcv1234!"/>
 				</div>
 				<div class="text-end">
 					<button type="submit" class="btn btn-primary">로그인</button>

@@ -21,3 +21,6 @@ values('admin1', '$2a$10$HBHJuiu69vd.G2pLa8Erd.NiFPgAc5VYg1uXXd.MOvcmmzpOxcRpe',
 
 insert into sample_employees
 values('admin2', '$2a$10$HBHJuiu69vd.G2pLa8Erd.NiFPgAc5VYg1uXXd.MOvcmmzpOxcRpe', '관리자2', 'emp1@gmail.com', 'ROLE_ADMIN', 1000, 105, now(), now());
+
+insert into sample_users
+values('user1', '$2a$10$HBHJuiu69vd.G2pLa8Erd.NiFPgAc5VYg1uXXd.MOvcmmzpOxcRpe', '사용자1', 'user1@gmail.com', now(), now());

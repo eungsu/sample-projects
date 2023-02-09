@@ -2,10 +2,13 @@ package com.example.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.security.AuthenticatedUser;
+import com.example.security.vo.LoginUser;
 import com.example.service.UserService;
 import com.example.web.form.UserRegisterForm;
 
@@ -15,6 +18,13 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	
+	@GetMapping("/home")
+	public String home(@AuthenticatedUser LoginUser loginUser, Model model) {
+		model.addAttribute("id", loginUser.getId());
+		model.addAttribute("name", loginUser.getName());
+		return "user/home";
+	}
 	
 	@GetMapping("/register")
 	public String form() {
