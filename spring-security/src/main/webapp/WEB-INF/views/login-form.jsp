@@ -23,6 +23,16 @@
 	<div class="row">
 		<div class="col-6">
 			<p>회원정보를 입력하세요</p>
+			<c:if test="${param.error eq 'fail'}">
+				<div class="alert alert-danger">
+					<strong>로그인 실패</strong> 아이디 혹은 비밀번호가 올바르지 않습니다.
+				</div>
+			</c:if>
+			<c:if test="${param.error eq 'denied'}">
+				<div class="alert alert-danger">
+					<strong>접근 거부</strong> 접근 권한이 없습니다.
+				</div>
+			</c:if>
 			<form id="form-register" class="border bg-light p-3" method="post" action="login">
 				<div class="mb-3">
 					<label class="form-label">사용자 구분</label>

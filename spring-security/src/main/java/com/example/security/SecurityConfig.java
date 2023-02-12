@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import com.example.security.service.CustomEmployeeDetailsService;
 import com.example.security.service.CustomUserDetailsService;
@@ -39,15 +41,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.formLogin()
 		.loginPage("/login")
 		.loginProcessingUrl("/login")
-		.failureUrl("/login?error=fail")
 		.and()
 		.logout()
 		.logoutUrl("/logout")
-		.logoutSuccessUrl("/")
 		.and()
-		.addFilter(getFilter());
-		
-		http.headers().frameOptions().disable();
+		.addFilter(authenticationFilter())
+		.exceptionHandling()
+		.accessDeniedHandler(accessDeniedHandler())
+		.and()
+		.headers().frameOptions().disable();
 	}
 	
 	@Override
@@ -55,12 +57,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.authenticationProvider(authenticationProvider());
 	}
 	
-	private CustomAuthenticationFilter getFilter() throws Exception {
-		CustomAuthenticationFilter filter = new CustomAuthenticationFilter();
-		filter.setAuthenticationManager(authenticationManager());
-		return filter;
+	@Bean
+	public CustomAccessDeniedHandler accessDeniedHandler() {
+		return new CustomAccessDeniedHandler();
 	}
 	
+	@Bean
+	public CustomAuthenticationFilter authenticationFilter() throws Exception {
+		CustomAuthenticationFilter filter = new CustomAuthenticationFilter();
+		filter.setAuthenticationManager(authenticationManager());
+		filter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler("/"));
+		filter.setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error=fail"));
+		return filter;
+	}
 	
 	@Bean
 	public AuthenticationProvider authenticationProvider() {
