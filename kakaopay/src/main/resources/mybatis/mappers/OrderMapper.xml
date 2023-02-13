@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.OrderMapper">
+
+	<insert id="insertOrder" parameterType="com.example.vo.Order">
+		insert into orders
+		(order_id, user_no, order_status, total_price)
+		values
+		(#{id}, #{userNo}, #{orderStatus}, #{totalPrice})
+	</insert>
+	
+	<select id="getOrdersByUserNo" resultType="com.example.vo.Order">
+		select
+			order_id as id,
+			user_no as userNo,
+			order_status as orderStatus,
+			total_price as totalPrice,
+			order_updated_date updatedDate,
+			order_created_date createdDate
+		from
+			orders
+		where
+			user_no = #{value}
+		order by
+			order_no desc
+	</select>
+	
+	<select id="getOrderById" parameterType="string" resultType="com.example.vo.Order">
+		select
+			order_id as id,
+			user_no as userNo,
+			order_status as orderStatus,
+			total_price as totalPrice,
+			order_updated_date updatedDate,
+			order_created_date createdDate
+		from
+			orders
+		where
+			order_id = #{value}
+	</select>
+	
+	<update id="updateOrder" parameterType="com.example.vo.Order">
+		update 
+			orders
+		set
+			order_status = #{orderStatus},
+			order_updated_date = sysdate
+		where
+			order_id = #{id}
+	</update>
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

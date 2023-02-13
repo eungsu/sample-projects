@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.UserMapper">
+
+	<insert id="insertUser" parameterType="com.example.vo.User">
+		insert into users
+		(user_name, user_email, user_password)
+		values
+		(#{name}, #{email}, #{password})
+	</insert>
+	
+	<select id="getUserByNo" parameterType="int" resultType="com.example.vo.User">
+		select
+			user_no as no,
+			user_name as name,
+			user_email as email,
+			user_password as password,
+			user_enabled as enabled,
+			user_point as point,
+			user_updated_date as updatedDate,
+			user_created_date as createdDate
+		from
+			users
+		where
+			user_no = #{value}
+	</select>
+	
+	<select id="getUserByEmail" parameterType="string" resultType="com.example.vo.User">
+		select
+			user_no as no,
+			user_name as name,
+			user_email as email,
+			user_password as password,
+			user_enabled as enabled,
+			user_point as point,
+			user_updated_date as updatedDate,
+			user_created_date as createdDate
+		from
+			users
+		where
+			user_email = #{value}
+	</select>
+	
+	<delete id="updateUser" parameterType="com.example.vo.User">
+		update 
+			users
+		set
+			user_password = #{password},
+			user_enabled = #{enabled},
+			user_point = #{point},
+			user_updated_date = sysdate
+		where
+			user_no = #{no}
+	</delete>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

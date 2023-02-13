@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.CartItemMapper">
+
+	<insert id="insertCartItem" parameterType="com.example.vo.CartItem">
+		insert into cart_items
+		(user_no, book_no, quantity)
+		values
+		(#{userNo}, #{bookNo}, #{quantity})
+	</insert>
+	
+	<select id="getCartItemsByUserNo" parameterType="int" resultType="com.example.vo.CartItem">
+		select
+			cart_item_no as no,
+			user_no as userNo,
+			book_noas bookNo,
+			quantity 
+		from
+			cart_items
+		where
+			user_no = #{value}
+		order by
+			cart_item_no asc
+	</select>
+	
+	<delete id="deleteCartItemByNo" parameterType="int">
+		delete from 
+			cart_items
+		where
+			cart_item_no = #{value}
+	</delete>
+
+	<delete id="deleteCartItemsByUserNo" parameterType="int">
+		delete from 
+			bookstore_books
+		where
+			user_no = #{value}
+	</delete>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.OrderItemMapper">
+
+	<insert id="insertOrderItem" parameterType="com.example.vo.OrderItem">
+		insert into order_items
+		(book_no, quantity, price, order_id)
+		values
+		(#{bookNo}, #{quantity}, #{price}, #{orderId})
+	</insert>
+	
+	<select id="getOrderItemsByOrderId" parameterType="string" resultType="com.example.vo.OrderItem">
+		select
+			order_item_no as no,
+			book_no as bookNo,
+			quantity,
+			price,
+			order_id orderId
+		from
+			order_items
+		where
+			order_id = #{value}
+		order by
+			order_item_no asc
+	</select>
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
