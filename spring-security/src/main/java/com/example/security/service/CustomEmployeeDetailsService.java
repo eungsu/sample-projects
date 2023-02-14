@@ -1,5 +1,6 @@
 package com.example.security.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.example.mapper.EmployeeMapper;
 import com.example.security.vo.CustomUserDetails;
 import com.example.vo.Employee;
+import com.example.vo.Role;
 
 @Service
 public class CustomEmployeeDetailsService implements UserDetailsService {
@@ -28,7 +30,11 @@ public class CustomEmployeeDetailsService implements UserDetailsService {
 			throw new UsernameNotFoundException("직원정보가 존재하지 않습니다.");
 		}
 		
-		Collection<? extends GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(employee.getAuth()));
+		List<Role> roles = employeeMapper.getEmployeeRolesByEmployeeId(employee.getId());
+		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+		for (Role role : roles) {
+			authorities.add(new SimpleGrantedAuthority(role.getName()));
+		}
 		
 		return new CustomUserDetails(employee.getId(), employee.getEncryptPassword(), employee.getName(), authorities);
 	}
