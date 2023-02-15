@@ -44,9 +44,9 @@ database | h2
 /admin/login | 관리자 로그인 화면 요청 |N | 없음
 /login | 사용자, 직원, 관리자 로그인 요청 처리 |N | 없음
 /logout | 로그아웃 요청 | Y | 없음
-/user/home | 사용자 홈 화면 요청 | Y | USER 권한, ADMIN 권한
-/emp/home | 직원 홈 화면 요청 | Y | EMPLOYEE 권한, ADMIN 권한
-/emp/admin | 관리자 홈 화면 요청 | Y | ADMIN 권한
+/user/home | 사용자 홈 화면 요청, 사용자 로그인이 성공하면 이 화면을 요청한다. | Y | USER 권한, ADMIN 권한
+/emp/home | 직원 홈 화면 요청, 직원 로그인이 성공하면 이 화면을 요청한다. | Y | EMPLOYEE 권한, ADMIN 권한
+/admi/home | 관리자 홈 화면 요청, 관리자 로그인이 성공하면 이 화면을 요청한다. | Y | ADMIN 권한
 
 ## 주요 클래스
 
