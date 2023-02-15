@@ -21,8 +21,6 @@ public class UserController {
 	
 	@GetMapping("/home")
 	public String home(@AuthenticatedUser LoginUser loginUser, Model model) {
-		model.addAttribute("id", loginUser.getId());
-		model.addAttribute("name", loginUser.getName());
 		return "user/home";
 	}
 	
@@ -41,5 +39,10 @@ public class UserController {
 	@GetMapping("/registered")
 	public String registered() {
 		return "user/completed";
+	}
+	
+	@GetMapping("/login")
+	public String loginform() {
+		return "user/login-form";
 	}
 }

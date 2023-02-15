@@ -1,6 +1,12 @@
 package com.example.security;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,8 +15,12 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
@@ -31,19 +41,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 		.csrf().disable()
-		.authorizeHttpRequests()
-		.antMatchers("/", "/user/register", "/user/registered", "/emp/register", "/emp/registered", "/login", "/logout").permitAll()
-		.antMatchers("/h2-console/**").permitAll()
+		.authorizeRequests()
+		.antMatchers("/").permitAll()
+		.antMatchers("/user/register", "/user/registered").permitAll()
+		.antMatchers("/emp/register", "/emp/registered").permitAll()
+		.antMatchers("/user/login", "/emp/login", "/admin/login").permitAll()
+		.antMatchers("/logout").authenticated()
+		.antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
 		.antMatchers("/emp/**").hasAnyRole("EMPLOYEE", "ADMIN")
 		.antMatchers("/admin/**").hasRole("ADMIN")
 		.anyRequest().authenticated()
 		.and()
 		.formLogin()
-		.loginPage("/login")
 		.loginProcessingUrl("/login")
 		.and()
 		.logout()
 		.logoutUrl("/logout")
+		.logoutSuccessUrl("/")
 		.and()
 		.addFilter(authenticationFilter())
 		.exceptionHandling()
@@ -66,14 +80,59 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public CustomAuthenticationFilter authenticationFilter() throws Exception {
 		CustomAuthenticationFilter filter = new CustomAuthenticationFilter();
 		filter.setAuthenticationManager(authenticationManager());
-		filter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler("/"));
-		filter.setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error=fail"));
+		filter.setAuthenticationSuccessHandler(authenticationSuccessHandler());
+		filter.setAuthenticationFailureHandler(authenticationFailureHandler());
 		return filter;
 	}
 	
 	@Bean
 	public AuthenticationProvider authenticationProvider() {
-		Map<String, UserDetailsService> map = Map.of("user", userDetailsService, "employee", employeeDetailsService);
+		Map<String, UserDetailsService> map = new HashMap<>();
+		map.put("사용자", userDetailsService);
+		map.put("직원", employeeDetailsService);
+		map.put("관리자", employeeDetailsService);
+		
 		return new CustomAuthenticationProvider(map, passwordEncoder);
+	}
+	
+	@Bean
+	public AuthenticationSuccessHandler authenticationSuccessHandler() {
+		return new AuthenticationSuccessHandler() {
+
+			@Override
+			public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+					Authentication authentication) throws IOException, ServletException {
+				CustomAuthenticationToken customAuthenticationToken = (CustomAuthenticationToken) authentication;
+				
+				String userType = customAuthenticationToken.getUserType();
+				if ("사용자".equals(userType)) {
+					response.sendRedirect("/user/home");
+				} else if ("직원".equals(userType)) {
+					response.sendRedirect("/emp/home");
+				} else if ("관리자".equals(userType)) {
+					response.sendRedirect("/admin/home");
+				}
+			}			
+		};
+	}
+	
+	@Bean
+	public AuthenticationFailureHandler authenticationFailureHandler() {
+		return new AuthenticationFailureHandler() {
+			
+			@Override
+			public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+					AuthenticationException exception) throws IOException, ServletException {
+				
+				String userType = request.getParameter("userType");
+				if ("사용자".equals(userType)) {
+					response.sendRedirect("/user/login?error=fail");
+				} else if ("직원".equals(userType)) {
+					response.sendRedirect("/emp/login?error=fail");
+				} else if ("관리자".equals(userType)) {
+					response.sendRedirect("/admin/login?error=fail");
+				}
+			}
+		};
 	}
 }

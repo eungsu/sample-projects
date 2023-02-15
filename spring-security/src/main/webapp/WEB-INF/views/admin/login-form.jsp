@@ -13,46 +13,29 @@
 </head>
 <body>
 <c:set var="menu" value="login" />
-<%@ include file="common/navbar.jsp" %>
+<%@ include file="../common/navbar.jsp" %>
 <div class="container">
 	<div class="row">
 		<div class="col-12">
-			<h1>로그인</h1>
+			<h1>관리자 로그인</h1>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-6">
-			<p>회원정보를 입력하세요</p>
+			<p>관리자 아이디와 비밀번호를 입력하세요.</p>
 			<c:if test="${param.error eq 'fail'}">
 				<div class="alert alert-danger">
 					<strong>로그인 실패</strong> 아이디 혹은 비밀번호가 올바르지 않습니다.
 				</div>
 			</c:if>
-			<c:if test="${param.error eq 'denied'}">
-				<div class="alert alert-danger">
-					<strong>접근 거부</strong> 접근 권한이 없습니다.
-				</div>
-			</c:if>
-			<form id="form-register" class="border bg-light p-3" method="post" action="login">
-				<div class="mb-3">
-					<label class="form-label">사용자 구분</label>
-					<div>
-						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="radio" name="userType" value="user" checked>
-							<label class="form-check-label">사용자</label>
-						</div>
-						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="radio" name="userType" value="employee" >
-							<label class="form-check-label">직원</label>
-						</div>
-					</div>
+			<form id="form-register" class="border bg-light p-3" method="post" action="/login">
+				<input type="hidden" name="userType" value="관리자" />
+				<div class="mb-2">
+					<label class="form-label">관리자 아이디</label>
+					<input type="text" class="form-control" name="id" value="admin1"/>
 				</div>
 				<div class="mb-2">
-					<label class="form-label">아이디(user1, user2, emp1, emp2, admin1, admin2)</label>
-					<input type="text" class="form-control" name="id" />
-				</div>
-				<div class="mb-2">
-					<label class="form-label">비밀번호</label>
+					<label class="form-label">관리자 비밀번호</label>
 					<input type="password" class="form-control" name="password" value="Zxcv1234!"/>
 				</div>
 				<div class="text-end">

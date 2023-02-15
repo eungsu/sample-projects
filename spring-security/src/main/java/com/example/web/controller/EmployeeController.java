@@ -21,8 +21,6 @@ public class EmployeeController {
 	
 	@GetMapping("/home")
 	public String home(@AuthenticatedUser LoginUser loginUser, Model model) {
-		model.addAttribute("id", loginUser.getId());
-		model.addAttribute("name", loginUser.getName());
 		return "emp/home";
 	}
 	
@@ -44,5 +42,10 @@ public class EmployeeController {
 	@GetMapping("/registered")
 	public String registered() {
 		return "emp/completed";
+	}
+	
+	@GetMapping("/login")
+	public String loginform() {
+		return "emp/login-form";
 	}
 }

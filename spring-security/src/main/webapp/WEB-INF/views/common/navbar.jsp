@@ -21,7 +21,16 @@
 		</sec:authorize>
 		<ul class="navbar-nav">
 			<sec:authorize access="!isAuthenticated()">
-				<li class="nav-item"><a class="nav-link ${menu eq 'login' ? 'active' : ''  }" href="/login">로그인</a></li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle ${menu eq 'register' ? 'active' : '' }" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						로그인
+					</a>
+	 				<ul class="dropdown-menu">
+						<li><a class="dropdown-item" href="/user/login">사용자로 로그인</a></li>
+						<li><a class="dropdown-item" href="/emp/login">직원으로 로그인</a></li>
+						<li><a class="dropdown-item" href="/admin/login">관리자로 로그인</a></li>
+					</ul>
+				</li>
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle ${menu eq 'register' ? 'active' : '' }" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 						회원가입

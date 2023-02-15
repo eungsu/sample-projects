@@ -14,8 +14,11 @@ public class AdminController {
 
 	@GetMapping("/home")
 	public String home(@AuthenticatedUser LoginUser loginUser, Model model) {
-		model.addAttribute("id", loginUser.getId());
-		model.addAttribute("name", loginUser.getName());
 		return "admin/home";
+	}
+	
+	@GetMapping("/login")
+	public String loginform() {
+		return "admin/login-form";
 	}
 }
