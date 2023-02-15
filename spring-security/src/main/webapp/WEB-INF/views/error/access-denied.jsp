@@ -11,13 +11,15 @@
 <title>샘플 애플리케이션</title>
 </head>
 <body>
-<c:set var="menu" value="emp" />
+<c:set var="menu" value="home" />
 <%@ include file="../common/navbar.jsp" %>
 <div class="container">
 	<div class="row">
 		<div class="col-12">
-			<h1>직원 홈 화면</h1>
-			<p><strong>직원</strong>와 <strong>관리자</strong>에게 접근이 허용됩니다.</p>
+			<h1>샘플 애플리케이션</h1>
+			<div class="alert alert-danger">
+				<strong>엑세스 거부</strong> 엑세스가 거부되었습니다.
+			</div>
 		</div>
 	</div>
 </div>

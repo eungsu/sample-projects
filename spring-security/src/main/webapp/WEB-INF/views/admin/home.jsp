@@ -17,8 +17,7 @@
 	<div class="row">
 		<div class="col-12">
 			<h1>관리자 홈 화면</h1>
-			<p>관리자 아이디: <strong>${id }</strong></p>
-			<p>관리자 이름: <strong>${name }</strong></p>
+			<p><strong>관리자</strong>에게 접근이 허용됩니다.</p>
 		</div>
 	</div>
 </div>

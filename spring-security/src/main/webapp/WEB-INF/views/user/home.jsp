@@ -17,8 +17,7 @@
 	<div class="row">
 		<div class="col-12">
 			<h1>사용자 홈 화면</h1>
-			<p>로그인한 아이디: <strong>${id }</strong></p>
-			<p>로그인한 이름: <strong>${name }</strong></p>
+			<p><strong>사용자</strong>와 <strong>관리자</strong>에게 접근이 허용됩니다.</p>
 		</div>
 	</div>
 </div>
