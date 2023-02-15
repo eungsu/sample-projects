@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.EmployeeMapper">
+	
+	<select id="getAllDepartments" resultType="com.example.vo.Department">
+		select
+			dept_no as no,
+			dept_name as name
+		from
+			sample_departments
+		order by
+			dept_no asc
+	</select>
+	
+	<select id="getDepartmentByNo" parameterType="int" resultType="com.example.vo.Department">
+		select
+			dept_no as no,
+			dept_name as name
+		from
+			sample_departments
+		where
+			dept_no = #{value}
+	</select>
+	
+	<select id="getAllEmployees" resultType="com.example.vo.Employee">
+		select
+			emp_no as no,
+			emp_id as id,
+			emp_password as password,
+			emp_name as name,
+			emp_email as email,
+			emp_dept_no as deptNo,
+			emp_created_date as createdDate,
+			emp_updated_date as updatedDate
+		from
+			sample_employees
+		order by
+			employee_no asc
+	</select>
+
+	<select id="getEmployeesByDeptNo" parameterType="int" resultType="com.example.vo.Employee">
+		select
+			emp_no as no,
+			emp_id as id,
+			emp_password as password,
+			emp_name as name,
+			emp_email as email,
+			emp_dept_no as deptNo,
+			emp_created_date as createdDate,
+			emp_updated_date as updatedDate
+		from
+			sample_employees
+		where
+			emp_dept_no = #{value}
+		order by
+			employee_no asc
+	</select>
+	
+	<select id="getEmployeeNo" parameterType="int" resultType="com.example.vo.Employee">
+		select
+			emp_no as no,
+			emp_id as id,
+			emp_password as password,
+			emp_name as name,
+			emp_email as email,
+			emp_dept_no as deptNo,
+			emp_created_date as createdDate,
+			emp_updated_date as updatedDate
+		from
+			sample_employees
+		where
+			emp_no = #{value}
+	</select>
+
+	<select id="getEmployeeById" parameterType="string" resultType="com.example.vo.Employee">
+		select
+			emp_no as no,
+			emp_id as id,
+			emp_password as password,
+			emp_name as name,
+			emp_email as email,
+			emp_dept_no as deptNo,
+			emp_created_date as createdDate,
+			emp_updated_date as updatedDate
+		from
+			sample_employees
+		where
+			emp_id = #{value}
+	</select>
+
+	<select id="getEmployeeByEmail" parameterType="string" resultType="com.example.vo.Employee">
+		select
+			emp_no as no,
+			emp_id as id,
+			emp_password as password,
+			emp_name as name,
+			emp_email as email,
+			emp_dept_no as deptNo,
+			emp_created_date as createdDate,
+			emp_updated_date as updatedDate
+		from
+			sample_employees
+		where
+			emp_email = #{value}
+	</select>
+	
+	<insert id="insertEmployee" parameterType="com.example.vo.Employee">
+		insert into sample_employees
+		(emp_no, emp_id, emp_password, emp_name, emp_email, emp_dept_no, emp_created_date, emp_updated_date)
+		values
+		(next value for employees_seq, #{id}, #{password}, #{name}, #{email}, #{deptNo}, now(), now())
+	</insert>
+	
+</mapper>

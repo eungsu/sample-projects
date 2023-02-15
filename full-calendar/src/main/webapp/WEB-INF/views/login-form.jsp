@@ -15,21 +15,13 @@
 <div class="container">
 	<div class="row">
 		<div class="col-12">
-			<h1>회원가입</h1>
+			<h1>직원 로그인</h1>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-6">
-			<p>회원정보를 입력하세요</p>
+			<p>아이디와 비밀번호를 입력하세요</p>
 			<form id="form-register" class="border bg-light p-3" method="post" action="register">
-				<div class="mb-2">
-					<label class="form-label">부서</label>
-					<select class="form-select" name="deptNo">
-						<c:forEach var="dept" items="${depts }">
-							<option value="${dept.no }"> ${dept.name }</option>
-						</c:forEach>
-					</select>
-				</div>
 				<div class="mb-2">
 					<label class="form-label">아이디</label>
 					<input type="text" class="form-control" name="id" />
@@ -38,16 +30,8 @@
 					<label class="form-label">비밀번호</label>
 					<input type="password" class="form-control" name="password" />
 				</div>
-				<div class="mb-2">
-					<label class="form-label">이름</label>
-					<input type="text" class="form-control" name="name" />
-				</div>
-				<div class="mb-2">
-					<label class="form-label">이메일</label>
-					<input type="text" class="form-control" name="email" />
-				</div>
 				<div class="text-end">
-					<button type="submit" class="btn btn-primary">회원가입</button>
+					<button type="submit" class="btn btn-primary">로그인</button>
 				</div>
 			</form>			
 		</div>

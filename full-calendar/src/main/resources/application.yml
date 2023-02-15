@@ -7,3 +7,9 @@ spring:
       prefix: /WEB-INF/views/
       suffix: .jsp
       
+mybatis:
+  mapper-locations:
+  - mybatis/mappers/*.xml
+  configuration:
+    jdbc-type-for-null: 'NULL'
+    log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl

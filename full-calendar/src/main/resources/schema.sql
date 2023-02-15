@@ -1,30 +1,48 @@
 create table sample_departments (
-    dept_no bigint(5) not null,
-    dept_name varchar(100)
-);
-
-create table sample_employees (
-    emp_no bigint(5) not null auto_increment,
-    emp_dept_no bigint(5) not null references sample_departments (dept_no),
-    emp_email varchar(100) not null unique,
-    emp_password varchar(20) not null,
-    emp_name varchar(100) not null,
-    emp_created_date date now(),
-    emp_updated_date date now(),
-    primary key (emp_no)
+    dept_no integer,
+    dept_name varchar(100),
+    primary key (dept_no)
 );
 
 create table sample_todo_categories (
-    cat_no bigint(5) not null,
-    cat_name varchar(100) not null,
+    cat_no integer ,
+    cat_name varchar(100),
     primary key (cat_no)
 );
 
-create table sample_todos (
-    todo_no bigint(5) not null auto_increment,
-    todo_cat_no bigint(5) not null references sample_todo_categories (cat_no),
-    todo_title varchar(255) not null,
-    todo_description varchar(1000) not null,
-    todo_due_date date not null
+create table sample_todo_status (
+	status_no integer,
+	status_name varchar(100),
+	primary key (status_no)
+);
 
-)
+create table sample_employees (
+    emp_no integer,
+    emp_id varchar(100),
+    emp_password varchar(100),
+    emp_name varchar(100),
+    emp_email varchar(100),
+    emp_created_date date ,
+    emp_updated_date date ,
+    emp_dept_no integer references sample_departments (dept_no),
+    primary key (emp_no)
+);
+
+create table sample_todos (
+    todo_no integer,
+    todo_cat_no integer references sample_todo_categories (cat_no),
+    todo_title varchar(255),
+    todo_emp_no integer references sample_employees (emp_no),
+    todo_description varchar(1000),
+    todo_due_date char(9),
+    todo_due_start_time char(5),
+    todo_due_end_time char(5),
+    todo_all_day char(1),
+    todo_status_no integer,
+    todo_created_date date,
+    todo_updated_date date,
+	primary key (todo_no)
+);
+
+create sequence employees_seq  start with 2010;
+create sequence todos_seq start with 10001;

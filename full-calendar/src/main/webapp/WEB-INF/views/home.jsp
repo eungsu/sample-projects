@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,19 +10,7 @@
 <title>샘플 애플리케이션</title>
 </head>
 <body>
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-	<div class="container">
-		<ul class="navbar-nav me-auto">
-			<li class="nav-item"><a class="nav-link active" href="/">홈</a></li>
-			<li class="nav-item"><a class="nav-link active" href="/calendar">일정관리</a></li>
-		</ul>
-		<ul class="navbar-nav">
-			<li class="nav-item"><a class="nav-link" href="/login">로그아웃</a></li>
-			<li class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
-			<li class="nav-item"><a class="nav-link" href="/register">회원가입</a></li>
-		</ul>
-	</div>
-</nav>
+<%@ include file="common/navbar.jsp" %>
 <div class="container">
 	<div class="row">
 		<div class="col-12">
