@@ -4,9 +4,9 @@
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 	<div class="container">
 		<ul class="navbar-nav me-auto">
-			<li class="nav-item"><a class="nav-link active" href="/">홈</a></li>
+			<li class="nav-item"><a class="nav-link" href="/">홈</a></li>
 			<c:if test="${not empty LOGIN_EMP }">
-				<li class="nav-item"><a class="nav-link active" href="/calendar">일정관리</a></li>
+				<li class="nav-item"><a class="nav-link" href="/calendar">일정관리</a></li>
 			</c:if>
 		</ul>
 		<c:if test="${not empty LOGIN_EMP }">

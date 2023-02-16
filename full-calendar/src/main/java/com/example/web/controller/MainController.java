@@ -25,6 +25,11 @@ public class MainController {
 		return "home";
 	}
 	
+	@GetMapping("/calendar")
+	public String calendar() {
+		return "calendar";
+	}
+	
 	@GetMapping("/register")
 	public String register(Model model) {
 		model.addAttribute("depts", employeeService.getAllDepartments());
