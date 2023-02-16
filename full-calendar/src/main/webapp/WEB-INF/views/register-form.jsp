@@ -19,7 +19,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-6">
+		<div class="col-12">		
 			<p>회원정보를 입력하세요</p>
 			<form id="form-register" class="border bg-light p-3" method="post" action="register">
 				<div class="mb-2">
@@ -39,7 +39,7 @@
 					<input type="password" class="form-control" name="password" />
 				</div>
 				<div class="mb-2">
-					<label class="form-label">이름</label>
+					<label class="form-label">닉네임</label>
 					<input type="text" class="form-control" name="name" />
 				</div>
 				<div class="mb-2">
@@ -55,28 +55,13 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script src="https://momentjs.com/downloads/moment.js" type="text/javascript"></script>
+<script src="https://momentjs.com/downloads/moment-with-locales.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(function() {
-	// 회원가입 폼에서 submit 이벤트가 발생하면 실행되는 이벤트 핸들러 함수를 등록한다.
-	$("#form-register").submit(function() {
-		let email = $("#form-register :input[name=email]").val();
-		let password = $("#form-register :input[name=password]").val();
-		let name = $("#form-register :input[name=name]").val();
-		
-		if (email === '') {
-			alert("이메일은 필수입력값입니다.");
-			return false;
-		}
-		if (password === '') {
-			alert('비밀번호는 필수입력값입니다.');
-			return false;
-		}
-		if (name === '') {
-			alert('이름은 필수입력값입니다.');
-			return false;
-		}
-		return true;
-	});
+	moment.locale("ko");
+	
+
 })
 </script>
 </body>

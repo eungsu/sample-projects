@@ -16,7 +16,7 @@ public interface EmployeeMapper {
 	List<Employee> getAllEmployees();
 	List<Employee> getEmployeesByDeptNo(int deptNo);
 	Employee getEmployeeByNo(int empNo);
-	Employee getEmployeeById(int empId);
+	Employee getEmployeeById(String empId);
 	Employee getEmployeeByEmail(String empEmail);
 
 	void insertEmployee(Employee employee);

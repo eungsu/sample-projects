@@ -21,14 +21,14 @@
 	<div class="row">
 		<div class="col-6">
 			<p>아이디와 비밀번호를 입력하세요</p>
-			<form id="form-register" class="border bg-light p-3" method="post" action="register">
+			<form id="form-register" class="border bg-light p-3" method="post" action="login">
 				<div class="mb-2">
 					<label class="form-label">아이디</label>
-					<input type="text" class="form-control" name="id" />
+					<input type="text" class="form-control" name="id" value="emp1"/>
 				</div>
 				<div class="mb-2">
 					<label class="form-label">비밀번호</label>
-					<input type="password" class="form-control" name="password" />
+					<input type="password" class="form-control" name="password" value="zxcv1234"/>
 				</div>
 				<div class="text-end">
 					<button type="submit" class="btn btn-primary">로그인</button>
