@@ -85,10 +85,12 @@
 <script type="text/javascript">
 	let todoInfoModal = new bootstrap.Modal("#modal-todo-info");
 	
+	// new FullCalendar.Calendar(엘리먼트, {key:value, key:value, key:value})
 	let calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
 		locale: 'ko',
 		initialView: 'dayGridMonth',
 		dateClick: function(info) {
+			alert(info.dateStr)
 			todoInfoModal.show();
 		}
 	});

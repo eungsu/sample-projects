@@ -26,7 +26,7 @@ public class MainController {
 	}
 	
 	@GetMapping("/calendar")
-	public String calendar() {
+	public String calendar(Model model) {
 		return "calendar";
 	}
 	
