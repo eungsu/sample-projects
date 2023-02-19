@@ -32,7 +32,7 @@ public class MainController {
 	
 	@GetMapping("/calendar")
 	public String calendar(Model model) {
-		if (SessionUtils.getAttribute("LOGIN_EMP") != null) {
+		if (SessionUtils.getAttribute("LOGIN_EMP") == null) {
 			return "redirect:/";
 		}
 		model.addAttribute("categories", todoService.getAllCategories());
