@@ -22,6 +22,7 @@
 			</div>
 		</div>
 		<div class="col-10">
+			<!-- 달력이 표시되는 엘리먼트다. -->
 			<div id="calendar"></div>
 		</div>
 	</div>
@@ -110,11 +111,18 @@ $(function() {
 	
 	// FullCalendar의 Calender객체를 생성한다.
 	let calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
+		// 달력의 월, 요일정보가 한글로 표시되도록 한다.
 		locale: 'ko',
+		// 달력의 초기화면을 월별로 일정이 표시되게 한다.
 		initialView: 'dayGridMonth',
+		// events 프로퍼티에는 달력이 변경될 때마다 실행되는 함수들 등록한다.
+		// info는 화면에 표시되는 달력의 시작일, 종료일을 제공한다.
+		// 일정정보를 조회하고, successCallback(이벤트배열)함수의 매개변수로 일정정보를 제공하고 실행하면 화면에 반영된다.
 		events: function(info, successCallback, failureCallback) {
-			getTodoEvents(info, successCallback);
+			refreshEvents(info, successCallback);
 		},
+		// dayClick 프로퍼티에는 달력의 날짜를 클릭했을 때 실행되는 함수를 등록한다.
+		// info는 클릭한 날짜의 날짜정보를 제공한다.
 		dateClick: function(info) {
 			let clickedDate = info.dateStr;
 			let nowTime = moment().format("HH:mm");
@@ -164,6 +172,7 @@ $(function() {
 	
 	// 일정 등록 모달창의 등록버튼을 클릭했을 때 실행될 이벤트핸들러 함수를 등록한다.
 	$("#btn-add-todo").click(function() {
+		// 일등록 모달창에서 제목, 구분, 시작일, 종료일, 내용을 조회해서 객체를 생성한다.
 		let todo = {
 			title: $(":input[name=title]").val(),
 			catNo: $("select[name=catNo]").val(),
@@ -171,8 +180,9 @@ $(function() {
 			endDate: $(":input[name=endDate]").val(),
 			description: $("textarea[name=description]").val()
 		};
-		
+		// 하루종일 스위치의 현재상태를 조회한다.
 		let allDay = $(":checkbox[name=allDay]:checked").val();
+		// 하루종일 스위치가 on 상태면 시작시간과 종료시간을 서버로 보내지 않고, allDay를 'Y'로 보낸다
 		if (allDay) {
 			todo['allDay'] = 'Y';
 		} else {
@@ -180,6 +190,7 @@ $(function() {
 			todo['startTime'] = $(":input[name=startTime]").val();
 			todo['endTime'] = $(":input[name=endTime]").val();
 		}
+		// addTdo(새일정)을 실행해서 ajax로 새 일정을 서버로 보낸다.
 		addTodo(todo);
 		todoInfoModal.hide();
 	});
@@ -197,8 +208,10 @@ $(function() {
 		
 		todoInfoModal.show();
 	}
-		
+	
+	// 새 일정정보를 서버로 보내고, FullCalenader의 달력에 새 일정정보를 추가한다.
 	function addTodo(todo) {
+		// ajax로 새 일정정보를 서버로 보내서 등록시킨다.
 		$.ajax({
 			type: 'post',
 			url: '/todos/add', 
@@ -206,15 +219,17 @@ $(function() {
 			contentType: 'application/json',
 			dataType: 'json'
 		})
+		// done(함수)는 ajax 요청이 성공적으로 완료되면 실행되는 함수를 등록한다.
 		.done(function(todoEvent) {
 			calendar.addEvent(todoEvent); 
 		})
+		// fail(함수)는 ajax 요청이 실팽하면 실행되는 함수를 등록한다.
 		.fail(function() {
 			 
 		});
 	}
 	
-	function getTodoEvents(info, successCallback) {
+	function refreshEvents(info, successCallback) {
 		let startDate = moment(info.start).format("YYYY-MM-DD");
 		let endDate = moment(info.end).format("YYYY-MM-DD");
 		
