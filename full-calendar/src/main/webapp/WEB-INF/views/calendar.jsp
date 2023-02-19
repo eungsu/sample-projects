@@ -13,7 +13,7 @@
 <%@ include file="common/navbar.jsp" %>
 <div class="container mt-3">
 	<div class="row">
-		<div class="col-3">
+		<div class="col-2">
 			<div class="list-group list-group-flush mt-5">
 				<a href="" class="list-group-item" id="link-my-todos">내 일정 보기</a>
 				<a href="" class="list-group-item" id="link-dept-todos">부서일정 보기</a>
@@ -21,7 +21,7 @@
 				<a href="" class="list-group-item" id="link-search-todos">일정 검색하기</a>
 			</div>
 		</div>
-		<div class="col-9">
+		<div class="col-10">
 			<div id="calendar"></div>
 		</div>
 	</div>
@@ -92,6 +92,7 @@
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js'></script>
 <script src="https://momentjs.com/downloads/moment.min.js" type="text/javascript"></script>
 <script type="text/javascript">
+$(function() {
 	// 모달객체를 생성합니다.
 	let todoInfoModal = new bootstrap.Modal("#modal-todo-info");
 	// 모달객체가 닫히면 실행할 이벤트 핸들러 함수를 등록한다.
@@ -111,6 +112,9 @@
 	let calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
 		locale: 'ko',
 		initialView: 'dayGridMonth',
+		events: function(info, successCallback, failureCallback) {
+			getTodoEvents(info, successCallback);
+		},
 		dateClick: function(info) {
 			let clickedDate = info.dateStr;
 			let nowTime = moment().format("HH:mm");
@@ -120,19 +124,6 @@
 	// Calendar를 렌더링한다.
 	calendar.render();
 
-	// 일정 등록 모달을 표시한다.
-	// 날짜와 시간을 전달받아서 시작일자, 시작시간, 종료일자, 종료시간을 입력한다.
-	// 시작일자와 종료일자는 같은 날짜로 하고, 시작시간에 현재 시간을 입력하고, 종료시간은 현재 시간보다 1시간 후로 입력한다.
-	function openTodoModal(date, time) {
-		let endTime = moment().add('1', 'h').format('HH:mm');
-		
-		$(":input[name=startDate]").val(date);	
-		$(":input[name=endDate]").val(date);
-		$(":input[name=startTime]").val(time);
-		$(":input[name=endTime]").val(endTime);
-		
-		todoInfoModal.show();
-	}
 	
 	// 내 일정보기 링크를 클릭했을 때 실행될 이벤트핸들러 함수를 등록한다.
 	$("#link-my-todos").click(function(event) {
@@ -168,45 +159,81 @@
 		} else {
 			$(":input[name=startTime]").prop("disabled", false);
 			$(":input[name=endTime]").prop("disabled", false);
-			
 		}
 	});
 	
 	// 일정 등록 모달창의 등록버튼을 클릭했을 때 실행될 이벤트핸들러 함수를 등록한다.
 	$("#btn-add-todo").click(function() {
-		let title = $(":input[name=startDate]").val();
-		let catNo = $("select[name=catNo]").val();
+		let todo = {
+			title: $(":input[name=title]").val(),
+			catNo: $("select[name=catNo]").val(),
+			startDate: $(":input[name=startDate]").val(),
+			endDate: $(":input[name=endDate]").val(),
+			description: $("textarea[name=description]").val()
+		};
+		
 		let allDay = $(":checkbox[name=allDay]:checked").val();
-		let startDate = $(":input[name=startDate]").val();
-		let startTime = $(":input[name=startTime]").val();
-		let endDate = $(":input[name=endDate]").val();
-		let endTime = $(":input[name=endTime]").val();
-		let description = $("textarea[name=description]").val()
+		if (allDay) {
+			todo['allDay'] = 'Y';
+		} else {
+			todo['allDay'] = 'N';
+			todo['startTime'] = $(":input[name=startTime]").val();
+			todo['endTime'] = $(":input[name=endTime]").val();
+		}
+		addTodo(todo);
+		todoInfoModal.hide();
+	});
+		
+	// 일정 등록 모달을 표시한다.
+	// 날짜와 시간을 전달받아서 시작일자, 시작시간, 종료일자, 종료시간을 입력한다.
+	// 시작일자와 종료일자는 같은 날짜로 하고, 시작시간에 현재 시간을 입력하고, 종료시간은 현재 시간보다 1시간 후로 입력한다.
+	function openTodoModal(date, time) {
+		let endTime = moment().add('1', 'h').format('HH:mm');
+		
+		$(":input[name=startDate]").val(date);	
+		$(":input[name=endDate]").val(date);
+		$(":input[name=startTime]").val(time);
+		$(":input[name=endTime]").val(endTime);
+		
+		todoInfoModal.show();
+	}
+		
+	function addTodo(todo) {
+		$.ajax({
+			type: 'post',
+			url: '/todos/add', 
+			data: JSON.stringify(todo),
+			contentType: 'application/json',
+			dataType: 'json'
+		})
+		.done(function(todoEvent) {
+			calendar.addEvent(todoEvent); 
+		})
+		.fail(function() {
+			 
+		});
+	}
+	
+	function getTodoEvents(info, successCallback) {
+		let startDate = moment(info.start).format("YYYY-MM-DD");
+		let endDate = moment(info.end).format("YYYY-MM-DD");
 		
 		let data = {
-			title: title,
-			catNo: catNo,
 			startDate: startDate,
-			endDtate: endDate,
-			description: description
+			endDate: endDate
 		};
-		if (allDay) {
-			data['allDay'] = 'Y';
-		} else {
-			data['allDay'] = 'N';
-			data['startTime'] = startTime;
-			data['endTime'] = endTime;
-		}
 		
-		$.post('/todos/add', JSON.stringify(data))
-		 .done(function(todo) {
-			 
-		 })
-		 .fail(function() {
-			 
-		 });
-		
-	});
+		$.ajax({
+			type: 'get',
+			url: '/todos/events',
+			data: data,
+			dataType: 'json'
+		})
+		.done(function(events) {
+			successCallback(events);
+		})
+	}
+});
 </script>
 </body>
 </html>

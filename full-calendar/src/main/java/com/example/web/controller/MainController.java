@@ -1,5 +1,6 @@
 package com.example.web.controller;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class MainController {
 	
 	@GetMapping("/calendar")
 	public String calendar(Model model) {
+		if (SessionUtils.getAttribute("LOGIN_EMP") != null) {
+			return "redirect:/";
+		}
 		model.addAttribute("categories", todoService.getAllCategories());
 		model.addAttribute("statuses", todoService.getAllStatuses());
 		
@@ -45,8 +49,6 @@ public class MainController {
 	
 	@PostMapping("/register")
 	public String register(@Valid RegisterEmployeeForm form, BindingResult errors) {
-		System.out.println(form);
-		System.out.println(errors);
 		if (errors.hasErrors()) {
 			return "register-form";
 		}
@@ -67,6 +69,13 @@ public class MainController {
 	public String login(String id, String password) {
 		Employee employee = employeeService.login(id, password);
 		SessionUtils.setAttribute("LOGIN_EMP", employee);
+		
+		return "redirect:/";
+	}
+	
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.invalidate();
 		
 		return "redirect:/";
 	}

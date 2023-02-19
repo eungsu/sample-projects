@@ -16,8 +16,9 @@ public class Todo {
 	private String title;
 	private int empNo;
 	private String description;
-	private String dueDate;
+	private String startDate;
 	private String startTime;
+	private String endDate;
 	private String endTime;
 	private String allDay;
 	private int statusNo;
