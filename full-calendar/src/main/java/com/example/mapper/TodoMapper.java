@@ -12,7 +12,7 @@ import com.example.vo.Todo;
 public interface TodoMapper {
 
 	List<Category> getAllCategories();
-	List<Status> getAllStatus();
+	List<Status> getAllStatuses();
 	void insertTodo(Todo todo);
 	
 }

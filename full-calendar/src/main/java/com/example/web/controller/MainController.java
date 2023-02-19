@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.service.EmployeeService;
+import com.example.service.TodoService;
 import com.example.util.SessionUtils;
 import com.example.vo.Employee;
 import com.example.web.form.RegisterEmployeeForm;
@@ -20,6 +21,9 @@ public class MainController {
 	@Autowired
 	EmployeeService employeeService;
 	
+	@Autowired
+	TodoService todoService;
+	
 	@GetMapping("/")
 	public String home() {
 		return "home";
@@ -27,6 +31,9 @@ public class MainController {
 	
 	@GetMapping("/calendar")
 	public String calendar(Model model) {
+		model.addAttribute("categories", todoService.getAllCategories());
+		model.addAttribute("statuses", todoService.getAllStatuses());
+		
 		return "calendar";
 	}
 	

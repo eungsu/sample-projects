@@ -12,7 +12,7 @@
 			cat_no asc
 	</select>
 	
-	<select id="getAllStatus" resultType="com.example.vo.Status">
+	<select id="getAllStatuses" resultType="com.example.vo.Status">
 		select
 			status_no as no,
 			status_name as name
@@ -24,9 +24,28 @@
 	
 	<insert id="insertTodo" parameterType="com.example.vo.Todo">
 		insert into sample_todos
-		(todo_no, todo_cat_no, todo_title, todo_emp_no, todo_description, todo_all_day,
-		 todo_start_date, todo_start_time, todo_end_date, todo_end_time,
-		 todo_status_no, todo_created_date, todo_update_date)
+		(todo_no, todo_cat_no, todo_title, todo_emp_no, todo_description, todo_all_day, todo_start_date, todo_start_time, todo_end_date, todo_end_time, todo_status_no, todo_created_date, todo_update_date)
+		values
+		(next value for todos_seq, #{catNo}, #{title}, #{empNo}, #{description}, #{allDay}, #{startDate}, #{startTime}, #{endDate}, #{endTime}, #{statusNo}, now(), now())
 	</insert>
+	
+	<select id="getTodoByNo" parameterType="int" resultType="com.example.vo.Todo">
+		select
+			todo_no as no,
+			todo_cat_no as catNo,
+			todo_title as title,
+			todo_emp_no as empNo,
+			todo_description as description,
+			todo_all_day as allDay,
+			todo_start_date as startDate,
+			todo_start_time as startTime,
+			todo_end_date as endDate,
+			todo_end_time as endTime,
+			todo_status_no as statusNo,
+			todo_created_date as createdDate,
+			todo_updated_date as updatedDate
+		from
+			todo_no = #{value}
+	</select>
 	
 </mapper>
