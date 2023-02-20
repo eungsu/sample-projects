@@ -99,34 +99,40 @@ $(function() {
 	// 모달객체가 닫히면 실행할 이벤트 핸들러 함수를 등록한다.
 	// 이벤트 핸들러 함수에서는 입력필드의 값을 초기화한다.
 	$("#modal-todo-info").on('hidden.bs.modal', function(event) {
-		let title = $(":input[name=startDate]").val("");
-		let catNo = $("select[name=catNo] option:eq(0)").prop("selected", true);
-		let allDay = $(":checkbox[name=allDay]").prop("checked", false);
-		let startDate = $(":input[name=startDate]").val("");
-		let startTime = $(":input[name=startTime]").val("").prop("disabled", false);
-		let endDate = $(":input[name=endDate]").val("");
-		let endTime = $(":input[name=endTime]").val("").prop("disabled", false);
-		let description = $("textarea[name=description]").val("")
+		$(":input[name=title]").val("");
+		$("select[name=catNo] option:eq(0)").prop("selected", true);
+		$(":checkbox[name=allDay]").prop("checked", false);
+		$(":input[name=startDate]").val("");
+		$(":input[name=startTime]").val("").prop("disabled", false);
+		$(":input[name=endDate]").val("");
+		$(":input[name=endTime]").val("").prop("disabled", false);
+		$("textarea[name=description]").val("")
 	})
 	
 	// FullCalendar의 Calender객체를 생성한다.
+	// new FullCalendar.Calendar(엘리먼트객체, 옵션객체)
+	// new FullCalendar.Calendar(document.getElementById("calendar"), {
+	//		locale: "ko",
+	//		initialView: "dayGridMonth",
+	//		events: function(int, successCallback, failureCallback) { ... }
+	//		dateClick: function(info) { ... }
+	// })
 	let calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
 		// 달력의 월, 요일정보가 한글로 표시되도록 한다.
 		locale: 'ko',
 		// 달력의 초기화면을 월별로 일정이 표시되게 한다.
 		initialView: 'dayGridMonth',
-		// events 프로퍼티에는 달력이 변경될 때마다 실행되는 함수들 등록한다.
+		// events 프로퍼티에는 달력이 변경될 때마다 실행되는 함수를 등록한다.
 		// info는 화면에 표시되는 달력의 시작일, 종료일을 제공한다.
 		// 일정정보를 조회하고, successCallback(이벤트배열)함수의 매개변수로 일정정보를 제공하고 실행하면 화면에 반영된다.
 		events: function(info, successCallback, failureCallback) {
 			refreshEvents(info, successCallback);
 		},
-		// dayClick 프로퍼티에는 달력의 날짜를 클릭했을 때 실행되는 함수를 등록한다.
+		// dateClick 프로퍼티에는 달력의 날짜를 클릭했을 때 실행되는 함수를 등록한다.
 		// info는 클릭한 날짜의 날짜정보를 제공한다.
 		dateClick: function(info) {
 			let clickedDate = info.dateStr;
-			let nowTime = moment().format("HH:mm");
-			openTodoModal(info.dateStr, nowTime);
+			openTodoModal(clickedDate);
 		}
 	});
 	// Calendar를 렌더링한다.
@@ -148,9 +154,8 @@ $(function() {
 	$("#link-add-todo").click(function(event) {
 		event.preventDefault();
 		
-		let date = moment().format("YYYY-MM-DD");
-		let time = moment().format("HH:mm");
-		openTodoModal(date, time);
+		let nowDate = moment().format("YYYY-MM-DD");
+		openTodoModal(nowDate);
 	});
 	
 	// 일정 검색하기 링크를 클릭했을 때 실행될 이벤트핸들러 함수를 등록한다.
@@ -198,12 +203,13 @@ $(function() {
 	// 일정 등록 모달을 표시한다.
 	// 날짜와 시간을 전달받아서 시작일자, 시작시간, 종료일자, 종료시간을 입력한다.
 	// 시작일자와 종료일자는 같은 날짜로 하고, 시작시간에 현재 시간을 입력하고, 종료시간은 현재 시간보다 1시간 후로 입력한다.
-	function openTodoModal(date, time) {
+	function openTodoModal(date) {
+		let startTime = moment().format('HH:mm');
 		let endTime = moment().add('1', 'h').format('HH:mm');
 		
 		$(":input[name=startDate]").val(date);	
 		$(":input[name=endDate]").val(date);
-		$(":input[name=startTime]").val(time);
+		$(":input[name=startTime]").val(startTime);
 		$(":input[name=endTime]").val(endTime);
 		
 		todoInfoModal.show();
@@ -232,8 +238,8 @@ $(function() {
 	function refreshEvents(info, successCallback) {
 		let startDate = moment(info.start).format("YYYY-MM-DD");
 		let endDate = moment(info.end).format("YYYY-MM-DD");
-		
-		let data = {
+	
+		let param = {
 			startDate: startDate,
 			endDate: endDate
 		};
@@ -241,7 +247,7 @@ $(function() {
 		$.ajax({
 			type: 'get',
 			url: '/todos/events',
-			data: data,
+			data: param,
 			dataType: 'json'
 		})
 		.done(function(events) {
