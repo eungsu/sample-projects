@@ -133,6 +133,10 @@ $(function() {
 		dateClick: function(info) {
 			let clickedDate = info.dateStr;
 			openTodoModal(clickedDate);
+		},
+		// eventClick 프로퍼티에는 달력의 이벤트(일정)을 클릭했을 때 실행되는 함수를 등록한다.
+		eventClick: function(info) {
+			
 		}
 	});
 	// Calendar를 렌더링한다.
@@ -166,12 +170,15 @@ $(function() {
 	// 하루종일 스위치의 상태가 변경될 때 실행될 이벤트핸들러 함수를 등록한다.
 	// 이벤트핸들러 함수에서는 하루종일이 활성화되면 시작시간, 종료시간 입력필드를 비활성화한다.
 	$(":checkbox[name=allDay]").change(function() {
+		
 		if ($(this).prop('checked')) {
-			$(":input[name=startTime]").prop("disabled", true);
-			$(":input[name=endTime]").prop("disabled", true);
+			$(":input[name=startTime]").prop("readOnly", true);
+			$(":input[name=endTime]").prop("readOnly", true);
 		} else {
-			$(":input[name=startTime]").prop("disabled", false);
-			$(":input[name=endTime]").prop("disabled", false);
+			let startTime = moment().format('HH:mm');
+			let endTime = moment().add('1', 'h').format('HH:mm');
+			$(":input[name=startTime]").prop("readOnly", false).val(startTime);
+			$(":input[name=endTime]").prop("readOnly", false).val(endTime);
 		}
 	});
 	
