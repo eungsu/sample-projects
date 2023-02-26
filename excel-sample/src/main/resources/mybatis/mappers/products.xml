@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.ProductMapper">
+	
+	<insert id="insertProducts">
+		insert into sample_products
+		(product_no, product_name, product_maker, product_price, product_discount_price, product_stock, product_created_date, product_updated_date)
+		values
+		<foreach collection="products" item="product" separator=",">
+			(next value for products_seq, #{product.name}, #{product.maker}, #{product.price}, #{product.discountPrice}, #{product.stock}, now(), now())
+		</foreach>
+	</insert>
+	
+	<select id="getAllProducts" resultType="com.example.vo.Product">
+		select
+			product_no as no,
+			product_name as name,
+			product_maker as maker,
+			product_price as price,
+			product_discount_price as discountPrice,
+			product_stock as stock,
+			product_created_date as createdDate,
+			product_updated_date as updateDate
+		from
+			sample_products
+		order by
+			product_no desc
+	</select>
+</mapper>
