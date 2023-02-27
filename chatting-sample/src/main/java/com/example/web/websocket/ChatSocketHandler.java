@@ -17,7 +17,7 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 	
 	private ObjectMapper objectMapper = new ObjectMapper();
 	private Map<String, WebSocketSession> waitingEmployeeSessions = Collections.synchronizedMap(new HashMap<>());
-	private Map<String, WebSocketSession> chattingEmployeeSessions = Collections.synchronizedMap(new HashMap<>());
+	private Map<String, Map<String, WebSocketSession>> chatRooms = Collections.synchronizedMap(new HashMap<>());
 	private Map<String, WebSocketSession> customerSessions = Collections.synchronizedMap(new HashMap<>());
 
 	// 웹 소켓 연결요청이 완료되면 실행되는 메소드다.
@@ -54,12 +54,16 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 			} else {
 				String employeeId = waitingEmployeeSessions.keySet().stream().findFirst().get();
 				WebSocketSession employeeSession = waitingEmployeeSessions.get(employeeId);
-				chattingEmployeeSessions.put(employeeId, employeeSession);
+				
+				Map<String, WebSocketSession> chatRoom = new HashMap<>();
+				chatRoom.put("customerSession", session);
+				chatRoom.put("employeeSession", employeeSession);
+				chatRooms.put(loginId, chatRoom);
+				
 				waitingEmployeeSessions.remove(employeeId);					
 				
 				ChatMessage responseMessage = new ChatMessage();
 				responseMessage.setCmd("chat");
-				responseMessage.setReceiver(employeeId);
 				responseMessage.setText("대기중인 상담직원과 연결되었습니다.");
 				session.sendMessage(new TextMessage(objectMapper.writeValueAsBytes(responseMessage)));
 			}
@@ -67,9 +71,11 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 			
 		} else if ("stop".equals(chatMessage.getCmd())) {
 			String employeeId = chatMessage.getReceiver();
-			WebSocketSession employeeSession = chattingEmployeeSessions.get(employeeId);
+			Map<String, WebSocketSession> chatRoom = chatRooms.get(loginId);
+			WebSocketSession employeeSession = chatRoom.get("employeeSession");
 			waitingEmployeeSessions.put(employeeId, employeeSession);
-			chattingEmployeeSessions.remove(employeeId);
+			
+			chatRooms.remove(loginId);
 			
 		} else if ("chat".equals(chatMessage.getCmd())) {
 			String sender = chatMessage.getSender();
