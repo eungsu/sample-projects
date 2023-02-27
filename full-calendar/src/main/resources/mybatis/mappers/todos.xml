@@ -73,11 +73,11 @@
 		where
 			A.todo_emp_no = #{empNo}
 		and
-			A.todo_start_date between #{startDate} and #{endDate}
-		and
-			A.todo_end_date between #{startDate} and #{endDate}
-		and
 			A.todo_cat_no = B.cat_no 
+		and
+			(A.todo_start_date between #{startDate} and #{endDate}
+		or
+			A.todo_end_date between #{startDate} and #{endDate}) 
 	</select>
 	
 	<select id="getTodoEventByNo" parameterType="int" resultType="com.example.dto.TodoEvent">
@@ -98,5 +98,12 @@
 		where
 			A.todo_no = #{value}
 	</select>
+	
+	<delete id="deleteTodo" parameterType="int">
+		delete from 
+			sample_todos
+		where
+			todo_no = #{value}
+	</delete>
 	
 </mapper>

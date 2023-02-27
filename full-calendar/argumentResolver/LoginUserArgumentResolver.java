@@ -7,7 +7,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import com.example.annotation.Login;
+import com.example.annotation.LoginEmployee;
 import com.example.util.SessionUtils;
 
 @Component
@@ -17,7 +17,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 		
-		Login loginEmployee = parameter.getParameterAnnotation(Login.class);
+		LoginEmployee loginEmployee = parameter.getParameterAnnotation(LoginEmployee.class);
 		if (loginEmployee == null) {
 			return null;
 		}
@@ -27,6 +27,6 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
 	
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
-		return parameter.hasParameterAnnotation(Login.class);
+		return parameter.hasParameterAnnotation(LoginEmployee.class);
 	}
 }

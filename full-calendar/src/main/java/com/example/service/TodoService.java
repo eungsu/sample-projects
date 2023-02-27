@@ -47,4 +47,16 @@ public class TodoService {
 	public List<TodoEvent> getEvents(Map<String, Object> param) {
 		return todoMapper.getTodoEvents(param);
 	}
+
+
+	public void deleteTodo(int empNo, int todoNo) {
+		Todo todo = todoMapper.getTodoByNo(todoNo);
+		if (todo == null) {
+			throw new RuntimeException("일정정보가 존재하지 않습니다.");
+		}
+		if (todo.getEmpNo() != empNo) {
+			throw new RuntimeException("다른 직원의 일정정보는 삭제할 수 없습니다.");
+		}
+		todoMapper.deleteTodo(todoNo);
+	}
 }

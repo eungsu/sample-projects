@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.annotation.Login;
+import com.example.annotation.LoginEmployee;
 import com.example.dto.TodoEvent;
 import com.example.service.TodoService;
 import com.example.vo.Employee;
@@ -28,17 +28,12 @@ public class TodoController {
 	private TodoService todoService;
 	
 	@PostMapping("/add")
-	public TodoEvent addTodo(@Login Employee employee, @RequestBody RegisterTodoForm form) {
+	public TodoEvent addTodo(@LoginEmployee Employee employee, @RequestBody RegisterTodoForm form) {
 		return todoService.addTodo(employee, form);
 	}
 	
-	@GetMapping("/delete")
-	public void deleteTodo(@Login Employee employee, @RequestParam("todoNo") int todoNo) {
-		todoService.deleteTodo(employee.getNo(), todoNo);
-	}
-	
 	@GetMapping("/events")
-	public List<TodoEvent> getEvents(@Login Employee employee, 
+	public List<TodoEvent> getEvents(@LoginEmployee Employee employee, 
 			@RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
 			@RequestParam("endDate") @DateTimeFormat(pattern =  "yyyy-MM-dd") Date endDate) {
 		

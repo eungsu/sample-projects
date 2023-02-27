@@ -70,7 +70,7 @@ values
 insert into sample_todos 
 (todo_no, todo_cat_no, todo_title, todo_emp_no, todo_description, todo_all_day, todo_start_date, todo_start_time, todo_end_date, todo_end_time, todo_status_no, todo_created_date, todo_updated_date) 
 values 
-(next value for todos_seq, 103, '출장1', 2001, '대전 사업소 출장', 'Y', '2024-02-27', null, '2023-02-27', null, 1001, now(), now());
+(next value for todos_seq, 103, '출장1', 2001, '대전 사업소 출장', 'Y', '2023-02-27', null, '2023-02-27', null, 1001, now(), now());
 
 
 insert into sample_todos 
