@@ -18,7 +18,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-6">
+		<div class="col-12">
 			<div class="card" id="card-chat">
 				<div class="card-header">상담내용</div>
 				<div class="card-body" style="height: 500px; overflow-y:scroll;"></div>
@@ -94,7 +94,7 @@ $(function() {
 		let message = {
 			cmd: 'chat-close',
 			roomId: roomId,
-			customerId: cusomerId,
+			customerId: customerId,
 			employeeId: employeeId,
 			senderType: '고객'
 		}
@@ -109,7 +109,7 @@ $(function() {
 			let message = {
 				cmd: 'chat-message',
 				roomId: roomId,
-				customerId: cusomerId,
+				customerId: customerId,
 				employeeId: employeeId,
 				senderType: '고객',
 				text: inputMessage

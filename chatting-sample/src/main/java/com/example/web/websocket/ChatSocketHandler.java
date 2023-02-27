@@ -92,6 +92,9 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 			responseMessage.setEmployeeId(employeeId);
 			responseMessage.setText("대기중인 상담직원과 연결되었습니다.");
 			session.sendMessage(new TextMessage(objectMapper.writeValueAsBytes(responseMessage)));
+			
+			responseMessage.setText("대기중인 고객과 연결되었습니다.");
+			employeeSession.sendMessage(new TextMessage(objectMapper.writeValueAsBytes(responseMessage)));
 		}
 	}
 	
@@ -118,9 +121,9 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 		
 		Map<String, WebSocketSession> chatRoom = chatRooms.get(roomId);
 		if ("고객".equals(senderType)) {
-			chatRoom.get(employeeId).sendMessage(new TextMessage(objectMapper.writeValueAsBytes(chatRoom)));
+			chatRoom.get(employeeId).sendMessage(new TextMessage(objectMapper.writeValueAsBytes(chatMessage)));
 		} else if ("직원".equals(senderType)) {
-			chatRoom.get(customerId).sendMessage(new TextMessage(objectMapper.writeValueAsBytes(chatRoom)));			
+			chatRoom.get(customerId).sendMessage(new TextMessage(objectMapper.writeValueAsBytes(chatMessage)));			
 		}
 	}
 	

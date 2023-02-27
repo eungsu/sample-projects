@@ -18,7 +18,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-6">
+		<div class="col-12">
 			<div class="card" id="card-chat">
 				<div class="card-header">상담내용</div>
 				<div class="card-body" style="height: 500px; overflow-y:scroll;">
@@ -42,6 +42,9 @@
 <script type="text/javascript">
 $(function() {
 	let ws = null;
+	// 현재 상담중인 직원아이디가 저장되는 변수ㅏ.
+	let roomId = null;
+	let employeeId = '${LOGIN_ID}';
 	let customerId = null;
 	
 	function connect() {
@@ -49,18 +52,15 @@ $(function() {
 		ws.onmessage = function(message) {
 			let data = JSON.parse(message.data);
 			
-			if (data.cmd == 'chat') {
-				customerId = data.receiver;
-				let value = data.text;
-				let content = `
-					<div class="w-75 float-start">
-						<div class="alert alert-warning">
-							\${value}
-						</div>
-					</div>
-				`;
-				$("#card-chat .card-body").append(content);
-			}	
+			if (data.cmd == "chat-open-success") {
+				roomId = data.roomId;
+				customerId = data.customerId;
+				appendChatMessage(data.text, 'float-start', 'alert-danger', 'text-start');
+			} else if (data.cmd == 'chat-message') {
+				appendChatMessage(data.text, 'float-start', 'alert-warning', 'text-start');
+			} else if (data.cmd == 'chat-error') {
+				appendChatMessage(data.text, 'float-start', 'alert-danger', 'text-start');
+			}
 		}
 	}
 	connect();
@@ -71,41 +71,39 @@ $(function() {
 		}
 	}
 	
-	function stopChat() {
-		let message = {
-			cmd: 'stop',
-			receiver: customerId,
-			sender: '직원'
-		}
-		send(message);
-	}
-	
+	// 상담메세지를 웹소켓으로 보낸다.
 	function chat() {
-		let value = $(":input[name='message']").val();
-		let message = {
-			cmd: 'chat',
-			receiver: customerId,
-			sender: '직원',
-			text: value
+		let inputMessage = $(":input[name='message']").val();
+		
+		if (inputMessage) {
+			let message = {
+				cmd: 'chat-message',
+				roomId: roomId,
+				customerId: customerId,
+				employeeId: employeeId,
+				senderType: '직원',
+				text: inputMessage
+			}
+			send(message);			
+			appendChatMessage(inputMessage, 'float-end', 'alert-info', 'text-end');
+			$(":input[name='message']").val("");
 		}
-		send(message);
-		let content = `
-			<div class="w-75 float-end">
-				<div class="alert alert-info">
-					\${value}
-				</div>
-			</div>
-		`;
-		$("#card-chat .card-body").append(content);
-		
-		$(":input[name='message']").val("")
-		
 	}
 	
 	function send(message) {
 		ws.send(JSON.stringify(message));
 	}
 	
+	function appendChatMessage(message, floating, style, align) {
+		let content = `
+			<div class="w-75 \${floating}">
+				<div class="alert \${style} \${align}">
+					\${message}
+				</div>
+			</div>
+		`;
+		$("#card-chat .card-body").append(content);
+	}
 	
 	$("#card-chat .card-footer button").click(function() {
 		chat();
