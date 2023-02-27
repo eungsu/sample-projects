@@ -6,8 +6,8 @@
 		insert into sample_products
 		(product_no, product_name, product_maker, product_price, product_discount_price, product_stock, product_created_date, product_updated_date)
 		values
-		<foreach collection="products" item="product" separator=",">
-			(next value for products_seq, #{product.name}, #{product.maker}, #{product.price}, #{product.discountPrice}, #{product.stock}, now(), now())
+		<foreach collection="products" item="map" separator=",">
+			(next value for products_seq, #{map.상품이름}, #{map.제조회사}, #{map.가격}, #{map.할인가격}, #{map.입고수량}, now(), now())
 		</foreach>
 	</insert>
 	
@@ -21,6 +21,20 @@
 			product_stock as stock,
 			product_created_date as createdDate,
 			product_updated_date as updateDate
+		from
+			sample_products
+		order by
+			product_no desc
+	</select>
+	
+	<select id="getAllProductsForMap" resultType="hashmap">
+		select
+			product_no,
+			product_name,
+			product_maker,
+			product_price,
+			product_discount_price,
+			product_stock
 		from
 			sample_products
 		order by

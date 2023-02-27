@@ -12,5 +12,6 @@ import com.example.vo.Product;
 public interface ProductMapper {
 
 	List<Product> getAllProducts();
+	List<Map<String, Object>> getAllProductsForMap();
 	void insertProducts(@Param("products") List<Map<String, Object>> products);
 }

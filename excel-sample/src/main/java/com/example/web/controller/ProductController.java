@@ -1,7 +1,6 @@
 package com.example.web.controller;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +25,7 @@ public class ProductController {
 	private ProductService productService;
 	
 	@Autowired
-	private ExcelParser productExcelParser;
+	private ExcelParser excelParser;
 	
 	@GetMapping("/list")
 	public String products(Model model) {
@@ -41,19 +40,17 @@ public class ProductController {
 	 */
 	@GetMapping(path = "/download", produces = "application/octet-stream")
 	public String download(Model model) {
-		List<String> keys = List.of("NO", "NAME", "MAKER", "PRICE", "DISCOUNT_PRICE", "STOCK");
+		// 엑셀문서 생성에 필요한 정보를 생성한다.
+		List<String> keys = List.of("PRODUCT_NO", "PRODUCT_NAME", "PRODUCT_MAKER", "PRODUCT_PRICE", "PRODUCT_DISCOUNT_PRICE", "PRODUCT_STOCK");
 		List<String> headers = List.of("상품번호", "상품이름", "제조회사", "가격", "할인가격", "재고수량");
 		List<Integer> widths = List.of(10, 30, 20, 20, 20, 20);
 		List<Map<String, Object>> items = productService.getProducts();
-
-		Map<String, Object> excelMap = new HashMap<>();
-		excelMap.put("filename", "상품목록.xlsx");
-		excelMap.put("keys", keys);
-		excelMap.put("headers", headers);
-		excelMap.put("widths", widths);
-		excelMap.put("items", items);
 		
-		model.addAttribute("excelMap", excelMap);
+		model.addAttribute("filename", "상품목록.xlsx");
+		model.addAttribute("keys", keys);
+		model.addAttribute("headers", headers);
+		model.addAttribute("widths", widths);
+		model.addAttribute("items", items);
 		
 		return "excelView";
 	}
@@ -65,8 +62,9 @@ public class ProductController {
 	public String upload(@RequestParam("xls") MultipartFile multipartFile) throws IOException {
 		
 		if (!multipartFile.isEmpty()) {
+			// 업로드된 첨부파일을 바이너리 데이터로 조회한다.
 			byte[] bytes = multipartFile.getBytes();
-			List<Map<String, Object>> dataList = productExcelParser.getExcelData(bytes);
+			List<Map<String, Object>> dataList = excelParser.getExcelData(bytes);
 			productService.insertProducts(dataList);
 		}
 		

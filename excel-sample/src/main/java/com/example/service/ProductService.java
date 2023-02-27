@@ -1,6 +1,5 @@
 package com.example.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,16 +24,6 @@ public class ProductService {
 	}
 	
 	public List<Map<String, Object>> getProducts() {
-		List<Product> products = getAllProducts();
-		return products.stream().map(product -> {
-			Map<String, Object> data = new HashMap<>();
-			data.put("NO", product.getNo());
-			data.put("NAME", product.getName());
-			data.put("MAKER", product.getMaker());
-			data.put("PRICE", product.getPrice());
-			data.put("DISCOUNT_PRICE", product.getDiscountPrice());
-			data.put("STOCK", product.getStock());
-			return data;
-		}).toList();
+		return productMapper.getAllProductsForMap();
 	}
 }

@@ -32,13 +32,11 @@ public class ExcelView extends AbstractXlsxView {
 	protected void buildExcelDocument(Map<String, Object> model, Workbook workbook, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		
-		Map<String, Object> excelMap = (Map<String, Object>) model.get("excelMap");
-		
-		List<Map<String, Object>> items = (List<Map<String,Object>>) excelMap.get("items");
-		List<String> keys = (List<String>) excelMap.get("keys");
-		List<String> headers = (List<String>) excelMap.get("headers");
-		List<Integer> widths = (List<Integer>) excelMap.get("widths");
-		String filename = (String) excelMap.get("filename");
+		List<Map<String, Object>> items = (List<Map<String,Object>>) model.get("items");
+		List<String> keys = (List<String>) model.get("keys");
+		List<String> headers = (List<String>) model.get("headers");
+		List<Integer> widths = (List<Integer>) model.get("widths");
+		String filename = (String) model.get("filename");
 		
 		response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(filename, "utf-8"));
 
