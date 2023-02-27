@@ -110,6 +110,12 @@ $(function() {
 	$("#card-chat .card-footer button").click(function() {
 		chat();
 	});
+	
+	$(":input[name='message']").keydown(function(event) {
+		if (event.which == 13) {
+			chat();
+		}
+	})
 })
 </script>
 </body>

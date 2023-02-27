@@ -3,7 +3,6 @@ package com.example.web.websocket;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
@@ -21,11 +20,15 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 	private Map<String, WebSocketSession> chattingEmployeeSessions = Collections.synchronizedMap(new HashMap<>());
 	private Map<String, WebSocketSession> customerSessions = Collections.synchronizedMap(new HashMap<>());
 
+	// 웹 소켓 연결요청이 완료되면 실행되는 메소드다.
+	// 웹 소켓 연결요청이 완료되면 해당 클라이언트와 통신을 담당하는 WebSocketSession을 고객과 직원으로 구분해서 Map객체에 저장한다.
+	// Map객체에 저장할 때는 고객이나 직원의 아이디를 key로 WebSocketSession을 value로 저장한다.
+	// customerSessions => [{"hong":WebSocketSession}, {"kim":WebSocketSession }, {"kang":WebSocketSession}]
+	// waitingEmployeeSessions => [{"emp1":WebSocketSession}, {"emp2":WebSocketSession}]
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		String loginId = (String) session.getAttributes().get("LOGIN_ID");
 		String loginType = (String) session.getAttributes().get("LOGIN_TYPE");
-		System.out.println("로그인 아이디: ["+loginId+"], 로그인 타입: ["+loginType+"]");
 		
 		if ("고객".equals(loginType)) {
 			customerSessions.put(loginId, session);	
@@ -35,11 +38,11 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 		
 	}
 	
+	// 클라이언트로부터 웹소켓으로 메세지를 수신하면 실행되는 메소드다.
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		String loginId = (String) session.getAttributes().get("LOGIN_ID");
 		ChatMessage chatMessage = objectMapper.readValue(message.getPayload(), ChatMessage.class);
-
 		
 		if ("start".equals(chatMessage.getCmd())) {
 			
@@ -92,6 +95,8 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 	
 	}
 	
+	// 클라이언트와 웹 소켓 연결이 종료되면 실행되는 메소드다.
+	// Map객체에 저장된 WebSocketSession 세션을 삭제한다.
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		String loginId = (String)session.getAttributes().get("LOGIN_ID");
@@ -104,6 +109,8 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 		}
 	}
 
+	// 클라이언트와 웹 소켓을 통해서 메세지 교환 중 오류가 발생하면 실행되는 메소드다.
+	// Map객체에 저장된 WebSocketSession 세션을 삭제한다.
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
 		String loginId = (String)session.getAttributes().get("LOGIN_ID");

@@ -21,9 +21,7 @@
 		<div class="col-6">
 			<div class="card" id="card-chat">
 				<div class="card-header">상담내용</div>
-				<div class="card-body" style="height: 500px; overflow-y:scroll;">
-					
-				</div>
+				<div class="card-body" style="height: 500px; overflow-y:scroll;"></div>
 				<div class='card-footer'>
 					<div class="row">
 						<div class="col-10">
@@ -41,14 +39,20 @@
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script type="text/javascript">
 $(function() {
+	// 웹소켓 객체를 저장하는 변수다.
 	let ws = null;
+	// 현재 상담중인 직원아이디가 저장되는 변수ㅏ.
 	let employeeId = null;
 	
+	// 웹소켓 연결요청을 보내는 메소드다.
 	function connect() {
+		// 웹소켓 객체를 생성하고, 지정된 URI로 웹소켓 연결요청을 보낸다.
 		ws = new SockJS("/chat");
+		// 웹소켓 연결이 완료되면 실행된다.
 		ws.onopen = function() {
 			startChat();
 		}
+		// 웹소켓으로 서버로부터 메세지를 수신하면 실행된다.
 		ws.onmessage = function(message) {
 			let data = JSON.parse(message.data);
 			
@@ -76,14 +80,17 @@ $(function() {
 			}
 		}
 	}
+	// 웹소켓 연결요청을 보낸다.
 	connect();
 	
+	// 웹소켓 연결을 해제한다.
 	function disconnect() {
 		if (ws != null) {
 			ws.clos();
 		}
 	}
 	
+	// 상담시작 요청을 웹소켓으로 보낸다.
 	function startChat() {
 		let message = {
 			cmd: 'start',
@@ -92,6 +99,7 @@ $(function() {
 		send(message);
 	}
 	
+	// 상담중단 요청을 웹소켓으로 보낸다.
 	function stopChat() {
 		let message = {
 			cmd: 'stop',
@@ -101,6 +109,7 @@ $(function() {
 		send(message);
 	}
 	
+	// 상담메세지를 웹소켓으로 보낸다.
 	function chat() {
 		let value = $(":input[name='message']").val();
 		let message = {
@@ -123,13 +132,24 @@ $(function() {
 		
 	}
 	
+	// 웹소켓으로 상담시작, 상담중단, 상담메세지를 서버로 보낸다.
 	function send(message) {
 		ws.send(JSON.stringify(message));
 	}
 	
+	// 전송버튼을 클릭했을 때 실행되는 이벤트 핸들러 함수다.
+	// chat()함수를 실행해서 상담 메세지를 웹소켓으로 서버로 보낸다.
 	$("#card-chat .card-footer button").click(function() {
 		chat();
 	});
+	
+	// 입력창에서 Enter키를 눌렀을때 실행되는 이벤트 핸들러 함수다.
+	// chat()함수를 실행해서 상담 메세지를 웹소켓으로 서버로 보낸다.
+	$(":input[name='message']").keydown(function(event) {
+		if (event.which == 13) {
+			chat();
+		}
+	})
 })
 </script>
 </body>
