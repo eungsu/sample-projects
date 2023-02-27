@@ -65,15 +65,19 @@
 			A.todo_start_time as "todo.startTime",
 			A.todo_end_date as "todo.endDate",
 			A.todo_end_time as "todo.endTime",
-			A.todo_status_no as "todo.statusNo"
+			A.todo_status_no as "todo.statusNo",
+			B.cat_no as "cat.no",
+			B.cat_name as "cat.name"
 		from
-			sample_todos A
+			sample_todos A, sample_todo_categories B
 		where
 			A.todo_emp_no = #{empNo}
 		and
 			A.todo_start_date between #{startDate} and #{endDate}
 		and
-			A.todo_end_date between #{startDate} and #{endDate} 
+			A.todo_end_date between #{startDate} and #{endDate}
+		and
+			A.todo_cat_no = B.cat_no 
 	</select>
 	
 	<select id="getTodoEventByNo" parameterType="int" resultType="com.example.dto.TodoEvent">

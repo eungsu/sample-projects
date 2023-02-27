@@ -83,7 +83,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-				<button type="button" class="btn btn-primary" id="btn-add-todo">등록</button>
+				<button type="button" class="btn btn-primary" id="btn-add-todo">확인</button>
 			</div>
 		</div>
 	</div>
@@ -127,6 +127,9 @@ $(function() {
 			let clickedDate = info.dateStr;
 			let nowTime = moment().format("HH:mm");
 			openTodoModal(info.dateStr, nowTime);
+		},
+		eventClick: function(info) {
+			alert(JSON.stringify(info));
 		}
 	});
 	// Calendar를 렌더링한다.

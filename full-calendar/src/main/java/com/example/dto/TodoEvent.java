@@ -1,6 +1,7 @@
 package com.example.dto;
 
 import java.util.Date;
+import java.util.Map;
 
 import com.example.util.DateUtils;
 import com.example.vo.Department;
@@ -46,5 +47,20 @@ public class TodoEvent {
 		return todo.getTitle();
 	}
 	
-	
+	public String getColor() {
+		switch (todo.getNo()) {
+			case 101: return "#2a4b7c";
+			case 102: return "#e08119";
+			case 103: return "#935529";
+			case 104: return "#00a170";
+			case 105: return "#926aa6";
+			case 106: return "#00758e";
+			case 107: return "#dd4132";
+			case 109: return "#6b5b95";
+			case 110: return "#6c4f3d";
+			case 111: return "#00539c";
+			case 112: return "#ff6f61";
+		}
+		return "";
+	}
 }
