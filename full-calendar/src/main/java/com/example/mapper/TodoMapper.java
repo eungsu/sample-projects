@@ -18,5 +18,7 @@ public interface TodoMapper {
 	void insertTodo(Todo todo);
 	List<TodoEvent> getTodoEvents(Map<String, Object> param);
 	TodoEvent getTodoEventByNo(int todoNo);
+	Todo getTodoByNo(int todoNo);
+	void deleteTodo(int todoNo);
 	
 }

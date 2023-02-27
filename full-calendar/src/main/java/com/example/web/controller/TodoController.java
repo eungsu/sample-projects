@@ -32,6 +32,11 @@ public class TodoController {
 		return todoService.addTodo(employee, form);
 	}
 	
+	@GetMapping("/delete")
+	public void deleteTodo(@Login Employee employee, @RequestParam("todoNo") int todoNo) {
+		todoService.deleteTodo(employee.getNo(), todoNo);
+	}
+	
 	@GetMapping("/events")
 	public List<TodoEvent> getEvents(@Login Employee employee, 
 			@RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,

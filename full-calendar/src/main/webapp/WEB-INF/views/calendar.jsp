@@ -15,24 +15,22 @@
 	<div class="row">
 		<div class="col-2">
 			<div class="list-group list-group-flush mt-5">
-				<a href="" class="list-group-item" id="link-my-todos">내 일정 보기</a>
-				<a href="" class="list-group-item" id="link-dept-todos">부서일정 보기</a>
 				<a href="" class="list-group-item" id="link-add-todo">새 일정등록</a>
-				<a href="" class="list-group-item" id="link-search-todos">일정 검색하기</a>
+				<a href="" class="list-group-item" id="link-get-dept-todo">부서 일정 조회</a>
+				<a href="" class="list-group-item" id="link-search-todo">일정 검색</a>
 			</div>
 		</div>
 		<div class="col-10">
-			<!-- 달력이 표시되는 엘리먼트다. -->
 			<div id="calendar"></div>
 		</div>
 	</div>
 </div>
-<!-- 일정 등록/수정 모달 -->
-<div class="modal" tabindex="-1" id="modal-todo-info">
+<!-- Todo 등록폼 -->
+<div class="modal" tabindex="-1" id="modal-todo-form">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title">일정 정보</h5>
+				<h5 class="modal-title">일정 정보 등록</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
@@ -82,8 +80,71 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-				<button type="button" class="btn btn-primary" id="btn-add-todo">등록</button>
+				<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">닫기</button>
+				<button type="button" class="btn btn-primary btn-sm" id="btn-add-todo">확인</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Todo 상세 모달 -->
+<div class="modal" tabindex="-1" id="modal-todo-info">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">일정 상세 정보</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="card">
+					<div class="card-body">
+						<form class="row g-3">
+							<input type="hidden" name="todoNo" />
+							<div class="col-sm-4">
+								<label class="form-label">구분</label>
+								<select class="form-select form-select-sm" name="catNo">
+									<c:forEach var="cat" items="${categories }">
+										<option value="${cat.no }"> ${cat.name }</option>
+									</c:forEach>
+								</select>
+							</div>
+							<div class="col-sm-8">
+								<label class="form-label">제목</label>
+								<input type="text" class="form-control form-control-sm" name="title">
+							</div>
+							<div class="col-sm-12">
+								<label class="form-label">하루종일</label>
+								<div class="form-check form-switch d-inline float-end">
+									<input class="form-check-input" type="checkbox" role="switch" name="allDay" value="Y">
+								</div>
+							</div>
+							<div class="col-sm-6 mb-2">
+								<label class="form-label">시작일자</label>
+								<input type="date" class="form-control form-control-sm" name="startDate">
+							</div>
+							<div class="col-sm-6 mb-2">
+								<label class="form-label">시작시간</label>
+								<input type="time" class="form-control form-control-sm" name="startTime">
+							</div>
+							<div class="col-sm-6 mb-2">
+								<label class="form-label">종료일자</label>
+								<input type="date" class="form-control form-control-sm" name="endDate">
+							</div>
+							<div class="col-sm-6 mb-2">
+								<label class="form-label">종료시간</label>
+								<input type="time" class="form-control form-control-sm" name="endTime">
+							</div>
+							<div class="col-sm-12">
+								<label class="form-label">내용</label>
+								<textarea rows="3" class="form-control" name="description"></textarea>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">닫기</button>
+				<button type="button" class="btn btn-warning btn-sm" id="btn-modify-todo">수정</button>
+				<button type="button" class="btn btn-danger btn-sm" id="btn-delete-todo">삭제</button>
 			</div>
 		</div>
 	</div>
@@ -94,11 +155,12 @@
 <script src="https://momentjs.com/downloads/moment.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(function() {
-	// 모달객체를 생성합니다.
+	
+	let clickedEvent;
+	let todoFormModal = new bootstrap.Modal("#modal-todo-form");
 	let todoInfoModal = new bootstrap.Modal("#modal-todo-info");
-	// 모달객체가 닫히면 실행할 이벤트 핸들러 함수를 등록한다.
-	// 이벤트 핸들러 함수에서는 입력필드의 값을 초기화한다.
-	$("#modal-todo-info").on('hidden.bs.modal', function(event) {
+	
+	$("#modal-todo-info, #modal-todo-info").on('hidden.bs.modal', function(event) {
 		$(":input[name=title]").val("");
 		$("select[name=catNo] option:eq(0)").prop("selected", true);
 		$(":checkbox[name=allDay]").prop("checked", false);
@@ -109,68 +171,51 @@ $(function() {
 		$("textarea[name=description]").val("")
 	})
 	
-	// FullCalendar의 Calender객체를 생성한다.
-	// new FullCalendar.Calendar(엘리먼트객체, 옵션객체)
-	// new FullCalendar.Calendar(document.getElementById("calendar"), {
-	//		locale: "ko",
-	//		initialView: "dayGridMonth",
-	//		events: function(int, successCallback, failureCallback) { ... }
-	//		dateClick: function(info) { ... }
-	// })
 	let calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
-		// 달력의 월, 요일정보가 한글로 표시되도록 한다.
 		locale: 'ko',
-		// 달력의 초기화면을 월별로 일정이 표시되게 한다.
 		initialView: 'dayGridMonth',
-		// events 프로퍼티에는 달력이 변경될 때마다 실행되는 함수를 등록한다.
-		// info는 화면에 표시되는 달력의 시작일, 종료일을 제공한다.
-		// 일정정보를 조회하고, successCallback(이벤트배열)함수의 매개변수로 일정정보를 제공하고 실행하면 화면에 반영된다.
 		events: function(info, successCallback, failureCallback) {
 			refreshEvents(info, successCallback);
 		},
-		// dateClick 프로퍼티에는 달력의 날짜를 클릭했을 때 실행되는 함수를 등록한다.
-		// info는 클릭한 날짜의 날짜정보를 제공한다.
 		dateClick: function(info) {
 			let clickedDate = info.dateStr;
-			openTodoModal(clickedDate);
+			let nowTime = moment().format("HH:mm");
+			openTodoFormModal(info.dateStr, nowTime);
 		},
-		// eventClick 프로퍼티에는 달력의 이벤트(일정)을 클릭했을 때 실행되는 함수를 등록한다.
 		eventClick: function(info) {
-			
+			clickedEvent = info.event;
+			openTodoInfoModal();
 		}
 	});
-	// Calendar를 렌더링한다.
 	calendar.render();
 
-	
-	// 내 일정보기 링크를 클릭했을 때 실행될 이벤트핸들러 함수를 등록한다.
-	$("#link-my-todos").click(function(event) {
-		event.preventDefault();
-	});
-	
-	// 부서 일정보기 링크를 클릭했을 때 실행될 이벤트핸들러 함수를 등록한다.
-	$("#link-dept-todos").click(function(event) {
-		event.preventDefault();
-	})
-	
-	// 새 일정 등록 링크를 클릭했을 때 실행될 이벤트핸들러 함수를 등록한다
-	// 새 일정 등록 링크를 클리했을 때는 현재 날짜와 시간을 일정 등록 모달에 입력필드에 입력한다.
 	$("#link-add-todo").click(function(event) {
 		event.preventDefault();
 		
 		let nowDate = moment().format("YYYY-MM-DD");
-		openTodoModal(nowDate);
+		openTodoFormModal(nowDate);
 	});
 	
-	// 일정 검색하기 링크를 클릭했을 때 실행될 이벤트핸들러 함수를 등록한다.
-	$("#link-search-todos").click(function(event) {
-		event.preventDefault();
-	})
-	
-	// 하루종일 스위치의 상태가 변경될 때 실행될 이벤트핸들러 함수를 등록한다.
-	// 이벤트핸들러 함수에서는 하루종일이 활성화되면 시작시간, 종료시간 입력필드를 비활성화한다.
-	$(":checkbox[name=allDay]").change(function() {
+	$("#btn-modify-todo").click(function() {
 		
+	});
+	
+	$("#btn-delete-todo").click(function() {
+		let todoNo = $("#modal-todo-info :input[name=todoNo]").val();
+		$.ajax({
+			type: "get",
+			url: "/todos/delete",
+			data: {todoNo: todoNo}
+		})
+		.done(function() {
+			clickedEvent.remove();
+		})
+		.always(function() {
+			todoInfoModal.hide();
+		})
+	});
+	
+	$(":checkbox[name=allDay]").change(function() {
 		if ($(this).prop('checked')) {
 			$(":input[name=startTime]").prop("readOnly", true);
 			$(":input[name=endTime]").prop("readOnly", true);
@@ -182,9 +227,7 @@ $(function() {
 		}
 	});
 	
-	// 일정 등록 모달창의 등록버튼을 클릭했을 때 실행될 이벤트핸들러 함수를 등록한다.
 	$("#btn-add-todo").click(function() {
-		// 일등록 모달창에서 제목, 구분, 시작일, 종료일, 내용을 조회해서 객체를 생성한다.
 		let todo = {
 			title: $(":input[name=title]").val(),
 			catNo: $("select[name=catNo]").val(),
@@ -192,9 +235,7 @@ $(function() {
 			endDate: $(":input[name=endDate]").val(),
 			description: $("textarea[name=description]").val()
 		};
-		// 하루종일 스위치의 현재상태를 조회한다.
 		let allDay = $(":checkbox[name=allDay]:checked").val();
-		// 하루종일 스위치가 on 상태면 시작시간과 종료시간을 서버로 보내지 않고, allDay를 'Y'로 보낸다
 		if (allDay) {
 			todo['allDay'] = 'Y';
 		} else {
@@ -202,29 +243,47 @@ $(function() {
 			todo['startTime'] = $(":input[name=startTime]").val();
 			todo['endTime'] = $(":input[name=endTime]").val();
 		}
-		// addTdo(새일정)을 실행해서 ajax로 새 일정을 서버로 보낸다.
 		addTodo(todo);
 		todoInfoModal.hide();
 	});
 		
-	// 일정 등록 모달을 표시한다.
-	// 날짜와 시간을 전달받아서 시작일자, 시작시간, 종료일자, 종료시간을 입력한다.
-	// 시작일자와 종료일자는 같은 날짜로 하고, 시작시간에 현재 시간을 입력하고, 종료시간은 현재 시간보다 1시간 후로 입력한다.
-	function openTodoModal(date) {
+	function openTodoFormModal(date) {
 		let startTime = moment().format('HH:mm');
 		let endTime = moment().add('1', 'h').format('HH:mm');
 		
-		$(":input[name=startDate]").val(date);	
-		$(":input[name=endDate]").val(date);
-		$(":input[name=startTime]").val(startTime);
-		$(":input[name=endTime]").val(endTime);
+		$("#modal-todo-form :input[name=startDate]").val(date);	
+		$("#modal-todo-form :input[name=startTime]").val(startTime);
+		$("#modal-todo-form :input[name=endDate]").val(date);
+		$("#modal-todo-form :input[name=endTime]").val(endTime);
+		
+		todoFormModal.show();
+	}
+	
+	function openTodoInfoModal() {
+		let todoNo = clickedEvent.id;
+		let title = clickedEvent.title;
+		let catNo = clickedEvent.extendedProps.catNo;
+		let allDay = clickedEvent.allDay;
+		let startDate = moment(clickedEvent.start).format("YYYY-MM-DD");
+		let startTime = moment(clickedEvent.start).format('HH:mm');
+		let endDate = moment(clickedEvent.start).format("YYYY-MM-DD")
+		let endTime = moment(clickedEvent.start).add(23, 'h').add(59, 'm').format("HH:mm");
+		let description = clickedEvent.extendedProps.description;
+		
+		$("#modal-todo-info :input[name=todoNo]").val(todoNo);
+		$("#modal-todo-info :input[name=title]").val(title);
+		$("#modal-todo-info :input[name=catNo]").val(catNo);
+		$("#modal-todo-info :checkbox[name=allDay]").prop("checked", allDay);
+		$("#modal-todo-info :input[name=startDate]").val(startDate);	
+		$("#modal-todo-info :input[name=startTime]").val(startTime);
+		$("#modal-todo-info :input[name=endDate]").val(startDate);
+		$("#modal-todo-info :input[name=endTime]").val(endTime);
+		$("#modal-todo-info :input[name=description]").val(description);
 		
 		todoInfoModal.show();
 	}
 	
-	// 새 일정정보를 서버로 보내고, FullCalenader의 달력에 새 일정정보를 추가한다.
 	function addTodo(todo) {
-		// ajax로 새 일정정보를 서버로 보내서 등록시킨다.
 		$.ajax({
 			type: 'post',
 			url: '/todos/add', 
@@ -232,14 +291,9 @@ $(function() {
 			contentType: 'application/json',
 			dataType: 'json'
 		})
-		// done(함수)는 ajax 요청이 성공적으로 완료되면 실행되는 함수를 등록한다.
 		.done(function(todoEvent) {
 			calendar.addEvent(todoEvent); 
 		})
-		// fail(함수)는 ajax 요청이 실팽하면 실행되는 함수를 등록한다.
-		.fail(function() {
-			 
-		});
 	}
 	
 	function refreshEvents(info, successCallback) {
@@ -257,8 +311,8 @@ $(function() {
 			data: param,
 			dataType: 'json'
 		})
-		.done(function(events) {
-			successCallback(events);
+		.done(function(eventObject) {
+			successCallback(eventObject);
 		})
 	}
 });

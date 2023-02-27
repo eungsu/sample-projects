@@ -30,4 +30,12 @@ public class TodoEvent {
 	public String getTitle() {
 		return todo.getTitle();
 	}
+	
+	public int getCatNo() {
+		return todo.getCatNo();
+	}
+	
+	public String getDescription() {
+		return todo.getDescription();
+	}
 }
