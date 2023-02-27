@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.CustomerMapper">
+	
+	<select id="getCustomerById" parameterType="string" resultType="com.example.vo.Customer">
+		select
+			customer_id as id,
+			customer_password as password,
+			customer_name as name,
+			customer_created_date as createdDate,
+			customer_updated_date as updatedDate
+		from
+			sample_customers
+		where
+			customer_id = #{value}
+	</select>
+	
+</mapper>
