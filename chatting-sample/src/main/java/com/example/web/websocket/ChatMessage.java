@@ -10,7 +10,9 @@ import lombok.ToString;
 public class ChatMessage {
 
 	private String cmd;
-	private String receiver;
-	private String sender;
+	private String roomId;
+	private String customerId;
+	private String employeeId;
+	private String senderType;
 	private String text;
 }

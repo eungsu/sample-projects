@@ -18,7 +18,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-6">
+		<div class="col-12">
 			<div class="card" id="card-chat">
 				<div class="card-header">상담내용</div>
 				<div class="card-body" style="height: 500px; overflow-y:scroll;"></div>
@@ -42,7 +42,9 @@ $(function() {
 	// 웹소켓 객체를 저장하는 변수다.
 	let ws = null;
 	// 현재 상담중인 직원아이디가 저장되는 변수ㅏ.
+	let roomId = null;
 	let employeeId = null;
+	let customerId = '${LOGIN_ID}';
 	
 	// 웹소켓 연결요청을 보내는 메소드다.
 	function connect() {
@@ -50,33 +52,20 @@ $(function() {
 		ws = new SockJS("/chat");
 		// 웹소켓 연결이 완료되면 실행된다.
 		ws.onopen = function() {
-			startChat();
+			openChat();
 		}
 		// 웹소켓으로 서버로부터 메세지를 수신하면 실행된다.
 		ws.onmessage = function(message) {
 			let data = JSON.parse(message.data);
 			
-			if (data.cmd == 'chat') {
-				let value = data.text;
-				employeeId = data.receiver;
-				let content = `
-					<div class="w-75 float-start">
-						<div class="alert alert-warning">
-							\${value}
-						</div>
-					</div>
-				`;
-				$("#card-chat .card-body").append(content);
-			} else if (data.cmd == 'error') {
-				let value = data.text;
-				let content = `
-					<div class="w-75 float-start">
-						<div class="alert alert-danger">
-							\${value}
-						</div>
-					</div>
-				`;
-				$("#card-chat .card-body").append(content);
+			if (data.cmd == "chat-open-success") {
+				roomId = data.roomId;
+				employeeId = data.employeeId;
+				appendChatMessage(data.text, 'float-start', 'alert-danger', 'text-start');
+			} else if (data.cmd == 'chat-message') {
+				appendChatMessage(data.text, 'float-start', 'alert-warning', 'text-start');
+			} else if (data.cmd == 'chat-error') {
+				appendChatMessage(data.text, 'float-start', 'alert-danger', 'text-start');
 			}
 		}
 	}
@@ -91,60 +80,65 @@ $(function() {
 	}
 	
 	// 상담시작 요청을 웹소켓으로 보낸다.
-	function startChat() {
+	function openChat() {
 		let message = {
-			cmd: 'start',
-			sender: '고객'
+			cmd: 'chat-open',
+			customerId: customerId,
+			senderType: "고객"
 		}
 		send(message);
 	}
 	
 	// 상담중단 요청을 웹소켓으로 보낸다.
-	function stopChat() {
+	function closeChat() {
 		let message = {
-			cmd: 'stop',
-			receiver: employeeId,
-			sender: '고객'
+			cmd: 'chat-close',
+			roomId: roomId,
+			customerId: customerId,
+			employeeId: employeeId,
+			senderType: '고객'
 		}
 		send(message);
 	}
 	
 	// 상담메세지를 웹소켓으로 보낸다.
 	function chat() {
-		let value = $(":input[name='message']").val();
-		let message = {
-			cmd: 'chat',
-			receiver: employeeId,
-			sender: '고객',
-			text: value
+		let inputMessage = $(":input[name='message']").val();
+		
+		if (inputMessage) {
+			let message = {
+				cmd: 'chat-message',
+				roomId: roomId,
+				customerId: customerId,
+				employeeId: employeeId,
+				senderType: '고객',
+				text: inputMessage
+			}
+			send(message);			
+			appendChatMessage(inputMessage, 'float-end', 'alert-info', 'text-end');
+			$(":input[name='message']").val("");
 		}
-		send(message);
-		let content = `
-			<div class="w-75 float-end">
-				<div class="alert alert-info text-end">
-					\${value}
-				</div>
-			</div>
-		`;
-		$("#card-chat .card-body").append(content);
-		
-		$(":input[name='message']").val("")
-		
 	}
 	
-	// 웹소켓으로 상담시작, 상담중단, 상담메세지를 서버로 보낸다.
 	function send(message) {
 		ws.send(JSON.stringify(message));
 	}
 	
-	// 전송버튼을 클릭했을 때 실행되는 이벤트 핸들러 함수다.
-	// chat()함수를 실행해서 상담 메세지를 웹소켓으로 서버로 보낸다.
+	function appendChatMessage(message, floating, style, align) {
+		let content = `
+			<div class="w-75 \${floating}">
+				<div class="alert \${style} \${align}">
+					\${message}
+				</div>
+			</div>
+		`;
+		$("#card-chat .card-body").append(content);
+	}
+	
 	$("#card-chat .card-footer button").click(function() {
 		chat();
 	});
 	
-	// 입력창에서 Enter키를 눌렀을때 실행되는 이벤트 핸들러 함수다.
-	// chat()함수를 실행해서 상담 메세지를 웹소켓으로 서버로 보낸다.
 	$(":input[name='message']").keydown(function(event) {
 		if (event.which == 13) {
 			chat();

@@ -2,7 +2,10 @@ package com.example.web.websocket;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
@@ -16,15 +19,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ChatSocketHandler extends TextWebSocketHandler {
 	
 	private ObjectMapper objectMapper = new ObjectMapper();
-	private Map<String, WebSocketSession> waitingEmployeeSessions = Collections.synchronizedMap(new HashMap<>());
+	// 채팅룸(상담중인 직원과 고객을 포함한다.)
 	private Map<String, Map<String, WebSocketSession>> chatRooms = Collections.synchronizedMap(new HashMap<>());
+	// 상담대기중인 직원
+	private Map<String, WebSocketSession> waitingEmployeeSessions = Collections.synchronizedMap(new HashMap<>());
+	// 상담페이지에 접속한 고객
 	private Map<String, WebSocketSession> customerSessions = Collections.synchronizedMap(new HashMap<>());
 
 	// 웹 소켓 연결요청이 완료되면 실행되는 메소드다.
-	// 웹 소켓 연결요청이 완료되면 해당 클라이언트와 통신을 담당하는 WebSocketSession을 고객과 직원으로 구분해서 Map객체에 저장한다.
-	// Map객체에 저장할 때는 고객이나 직원의 아이디를 key로 WebSocketSession을 value로 저장한다.
-	// customerSessions => [{"hong":WebSocketSession}, {"kim":WebSocketSession }, {"kang":WebSocketSession}]
-	// waitingEmployeeSessions => [{"emp1":WebSocketSession}, {"emp2":WebSocketSession}]
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		String loginId = (String) session.getAttributes().get("LOGIN_ID");
@@ -35,97 +37,118 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 		} else if ("직원".equals(loginType)) {
 			waitingEmployeeSessions.put(loginId, session);
 		}
-		
 	}
 	
 	// 클라이언트로부터 웹소켓으로 메세지를 수신하면 실행되는 메소드다.
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-		String loginId = (String) session.getAttributes().get("LOGIN_ID");
 		ChatMessage chatMessage = objectMapper.readValue(message.getPayload(), ChatMessage.class);
-		
-		if ("start".equals(chatMessage.getCmd())) {
-			
-			if (waitingEmployeeSessions.size() == 0) {
-				ChatMessage responseMessage = new ChatMessage();
-				responseMessage.setCmd("error");
-				responseMessage.setText("대기중인 상담직원이 없습니다.");
-				session.sendMessage(new TextMessage(objectMapper.writeValueAsBytes(responseMessage)));
-			} else {
-				String employeeId = waitingEmployeeSessions.keySet().stream().findFirst().get();
-				WebSocketSession employeeSession = waitingEmployeeSessions.get(employeeId);
-				
-				Map<String, WebSocketSession> chatRoom = new HashMap<>();
-				chatRoom.put("customerSession", session);
-				chatRoom.put("employeeSession", employeeSession);
-				chatRooms.put(loginId, chatRoom);
-				
-				waitingEmployeeSessions.remove(employeeId);					
-				
-				ChatMessage responseMessage = new ChatMessage();
-				responseMessage.setCmd("chat");
-				responseMessage.setText("대기중인 상담직원과 연결되었습니다.");
-				session.sendMessage(new TextMessage(objectMapper.writeValueAsBytes(responseMessage)));
-			}
-			
-			
-		} else if ("stop".equals(chatMessage.getCmd())) {
-			String employeeId = chatMessage.getReceiver();
-			Map<String, WebSocketSession> chatRoom = chatRooms.get(loginId);
-			WebSocketSession employeeSession = chatRoom.get("employeeSession");
-			waitingEmployeeSessions.put(employeeId, employeeSession);
-			
-			chatRooms.remove(loginId);
-			
-		} else if ("chat".equals(chatMessage.getCmd())) {
-			String sender = chatMessage.getSender();
-			if ("고객".equals(sender)) {
-				String employeeId = chatMessage.getReceiver();
-				
-				ChatMessage responseMessage = new ChatMessage();
-				responseMessage.setCmd("chat");
-				responseMessage.setReceiver(loginId);
-				responseMessage.setText(chatMessage.getText());
-				chattingEmployeeSessions.get(employeeId).sendMessage(new TextMessage(objectMapper.writeValueAsBytes(responseMessage)));
-				
-			} else if ("직원".equals(sender)) {
-				String customerId = chatMessage.getReceiver();
-				
-				ChatMessage responseMessage = new ChatMessage();
-				responseMessage.setCmd("chat");
-				responseMessage.setReceiver(loginId);
-				responseMessage.setText(chatMessage.getText());
-				customerSessions.get(customerId).sendMessage(new TextMessage(objectMapper.writeValueAsBytes(responseMessage)));
-			}
-		} 			
-	
+		String cmd = chatMessage.getCmd();		
+		if ("chat-open".equals(cmd)) {
+			openChatRoom(session, chatMessage);
+		} else if ("chat-close".equals(cmd)) {
+			closeChatRoom(session, chatMessage);
+		} else if ("chat-message".equals(cmd)) {
+			chatting(session, chatMessage);
+		}
 	}
 	
 	// 클라이언트와 웹 소켓 연결이 종료되면 실행되는 메소드다.
-	// Map객체에 저장된 WebSocketSession 세션을 삭제한다.
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		String loginId = (String)session.getAttributes().get("LOGIN_ID");
-		String loginType = (String) session.getAttributes().get("LOGIN_Type");
-		if ("고객".equals(loginType)) {
-			customerSessions.remove(loginId);			
-		} else if ("직원".equals(loginType)) {
-			waitingEmployeeSessions.remove(loginId);
-			chattingEmployeeSessions.remove(loginId);
-		}
+		removeWebSocketSession(session);
 	}
 
 	// 클라이언트와 웹 소켓을 통해서 메세지 교환 중 오류가 발생하면 실행되는 메소드다.
-	// Map객체에 저장된 WebSocketSession 세션을 삭제한다.
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-		String loginId = (String)session.getAttributes().get("LOGIN_ID");
-		String loginType = (String) session.getAttributes().get("LOGIN_Type");
+		removeWebSocketSession(session);
+	}
+	
+	private void openChatRoom(WebSocketSession session, ChatMessage chatMessage) throws Exception {
+		String customerId = chatMessage.getCustomerId();
+		
+		if (waitingEmployeeSessions.isEmpty()) {
+			ChatMessage responseMessage = new ChatMessage();
+			responseMessage.setCmd("chat-error");
+			responseMessage.setText("대기중인 상담직원이 없습니다.");
+			session.sendMessage(new TextMessage(objectMapper.writeValueAsBytes(responseMessage)));
+			
+		} else {
+			String uuid = UUID.randomUUID().toString();
+			String employeeId = waitingEmployeeSessions.keySet().stream().findFirst().get();
+			WebSocketSession employeeSession = waitingEmployeeSessions.get(employeeId);
+			
+			Map<String, WebSocketSession> chatRoom = new HashMap<>();
+			chatRoom.put(customerId, session);
+			chatRoom.put(employeeId, employeeSession);
+			chatRooms.put(uuid, chatRoom);
+			waitingEmployeeSessions.remove(employeeId);					
+			
+			ChatMessage responseMessage = new ChatMessage();
+			responseMessage.setCmd("chat-open-success");
+			responseMessage.setRoomId(uuid);
+			responseMessage.setCustomerId(customerId);
+			responseMessage.setEmployeeId(employeeId);
+			responseMessage.setText("대기중인 상담직원과 연결되었습니다.");
+			session.sendMessage(new TextMessage(objectMapper.writeValueAsBytes(responseMessage)));
+			
+			responseMessage.setText("대기중인 고객과 연결되었습니다.");
+			employeeSession.sendMessage(new TextMessage(objectMapper.writeValueAsBytes(responseMessage)));
+		}
+	}
+	
+	private void closeChatRoom(WebSocketSession session, ChatMessage chatMessage) throws Exception {
+		String roomId = chatMessage.getRoomId();
+		String employeeId = chatMessage.getEmployeeId();
+		
+		Map<String, WebSocketSession> chatRoom = chatRooms.get(roomId);
+		WebSocketSession employeeSession = chatRoom.get(employeeId);
+		waitingEmployeeSessions.put(employeeId, employeeSession);
+		chatRooms.remove(roomId);
+		
+		ChatMessage responseMessage = new ChatMessage();
+		responseMessage.setCmd("chat-close-success");
+		responseMessage.setText("상담직원과 상담이 종료되었습니다.");
+		session.sendMessage(new TextMessage(objectMapper.writeValueAsBytes(responseMessage)));
+	}
+	
+	private void chatting(WebSocketSession session, ChatMessage chatMessage) throws Exception {
+		String roomId = chatMessage.getRoomId();
+		String customerId = chatMessage.getCustomerId();
+		String employeeId = chatMessage.getEmployeeId();
+		String senderType = chatMessage.getSenderType();
+		
+		Map<String, WebSocketSession> chatRoom = chatRooms.get(roomId);
+		if ("고객".equals(senderType)) {
+			chatRoom.get(employeeId).sendMessage(new TextMessage(objectMapper.writeValueAsBytes(chatMessage)));
+		} else if ("직원".equals(senderType)) {
+			chatRoom.get(customerId).sendMessage(new TextMessage(objectMapper.writeValueAsBytes(chatMessage)));			
+		}
+	}
+	
+	private void removeWebSocketSession(WebSocketSession session) throws Exception {
+		String loginId = (String) session.getAttributes().get("LOGIN_ID");
+		String loginType = (String) session.getAttributes().get("LOGIN_TYPE");
+		
 		if ("고객".equals(loginType)) {
-			customerSessions.remove(loginId);			
+			customerSessions.remove(loginId);	
 		} else if ("직원".equals(loginType)) {
 			waitingEmployeeSessions.remove(loginId);
-			chattingEmployeeSessions.remove(loginId);
+		}
+		destoryChatRoom(loginId);
+	}
+	
+	private void destoryChatRoom(String loginId) {
+		Set<String> roomIdSet = chatRooms.keySet();
+		Iterator<String> iterator = roomIdSet.iterator();
+		while (iterator.hasNext()) {
+			String roomId = iterator.next();
+			Map<String, WebSocketSession> chatRoom = chatRooms.get(roomId);
+			if (chatRoom.containsKey(loginId)) {
+				chatRoom.remove(loginId);
+				chatRooms.remove(roomId);
+			};
 		}
 	}
 }
