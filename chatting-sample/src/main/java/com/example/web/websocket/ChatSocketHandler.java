@@ -43,6 +43,7 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		ChatMessage chatMessage = objectMapper.readValue(message.getPayload(), ChatMessage.class);
+		
 		String cmd = chatMessage.getCmd();		
 		if ("chat-open".equals(cmd)) {
 			openChatRoom(session, chatMessage);
@@ -82,8 +83,8 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 			Map<String, WebSocketSession> chatRoom = new HashMap<>();
 			chatRoom.put(customerId, session);
 			chatRoom.put(employeeId, employeeSession);
-			chatRooms.put(uuid, chatRoom);
 			waitingEmployeeSessions.remove(employeeId);					
+			chatRooms.put(uuid, chatRoom);
 			
 			ChatMessage responseMessage = new ChatMessage();
 			responseMessage.setCmd("chat-open-success");

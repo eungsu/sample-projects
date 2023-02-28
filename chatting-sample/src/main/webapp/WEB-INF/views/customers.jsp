@@ -50,18 +50,19 @@ $(function() {
 	function connect() {
 		// 웹소켓 객체를 생성하고, 지정된 URI로 웹소켓 연결요청을 보낸다.
 		ws = new SockJS("/chat");
-		// 웹소켓 연결이 완료되면 실행된다.
+		// onopen이벤트(웹소켓서버와 연결이 완료되면 발생하는 이벤트다) 발생시 실행될 콜백함수를 등록한다.
 		ws.onopen = function() {
+			// 상담용 채팅방 생성을 요청하는 메세지를 보낸다.
 			openChat();
 		}
-		// 웹소켓으로 서버로부터 메세지를 수신하면 실행된다.
+		// onmessage이벤트(웹소켓서버가 보낸 메세지를 수신하면 발생하는 이벤트다.) 발생시 실행될 콜백함수를 등록한다.
 		ws.onmessage = function(message) {
 			let data = JSON.parse(message.data);
 			
 			if (data.cmd == "chat-open-success") {
 				roomId = data.roomId;
 				employeeId = data.employeeId;
-				appendChatMessage(data.text, 'float-start', 'alert-danger', 'text-start');
+				appendChatMessage(data.text, 'float-start', 'alert-success', 'text-start');
 			} else if (data.cmd == 'chat-message') {
 				appendChatMessage(data.text, 'float-start', 'alert-warning', 'text-start');
 			} else if (data.cmd == 'chat-error') {
