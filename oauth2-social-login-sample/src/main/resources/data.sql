@@ -1,0 +1,2 @@
+insert into sample_users (user_id, user_password, user_name, user_email, user_provider_type, user_role_type, user_created_date, user_updated_date) values 
+('hong', '$2a$10$375Gt1T6ztZUd3urnDVmJ.GvKg4nK0iSg1nH3sGowJ/4GegY8S/3.', '홍길동', 'hong@gmail.com', 'local', 'ROLE_USER', now(), now());
