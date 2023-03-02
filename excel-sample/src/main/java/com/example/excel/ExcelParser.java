@@ -56,7 +56,7 @@ public class ExcelParser {
 		}		
 		
 		// 엑셀문서의 데이터부분의 조회한다.
-		for (int rowIndex = 1; rowIndex < sheet.getLastRowNum(); rowIndex++) {
+		for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
 			// 엑셀문서의 시트에서 데이터가 저장된 행을 조회한다.
 			Row row = sheet.getRow(rowIndex);
 			
