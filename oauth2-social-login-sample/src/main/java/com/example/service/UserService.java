@@ -2,10 +2,12 @@ package com.example.service;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.mapper.UserMapper;
+import com.example.security.user.LoginUser;
 import com.example.vo.User;
 import com.example.web.form.UserRegisterForm;
 
@@ -19,6 +21,9 @@ public class UserService {
 	private PasswordEncoder passwordEncoder;
 	
 	public void registerUser(UserRegisterForm form) {
+		((LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+		((LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+		
 		User savedUser = userMapper.getUserById(form.getId());
 		if (savedUser != null) {
 			throw new RuntimeException("아이디와 비밀번호가 이미 사용중입니다.");

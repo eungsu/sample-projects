@@ -6,6 +6,7 @@ public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
 
 	public KakaoOAuth2UserInfo(Map<String, Object> attributes) {
 		super(attributes);
+		System.out.println(attributes);
 	}
 	
 	@Override
@@ -24,8 +25,13 @@ public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
 	}
 	
 	@Override
+	@SuppressWarnings("unchecked")
 	public String getEmail() {
-		return (String) getAttributes().get("account_email");
+		Map<String, Object> kakaoAccount = (Map<String, Object>) getAttributes().get("kakao_account");
+		if (kakaoAccount == null) {
+			return null;
+		}
+		return (String) kakaoAccount.get("email");
 	}
 	
 }
