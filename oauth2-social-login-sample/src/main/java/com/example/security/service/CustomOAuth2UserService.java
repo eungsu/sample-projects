@@ -28,7 +28,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 		// 소셜에 사용자정보를 요청하는 OAuth2UserService객체를 획득한다.
-		OAuth2UserService<OAuth2UserService, OAuth2User> delegate = new DefaultOAuth2UserService();
+		OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
 		
 		// accessToken을 가지고 있는 OAuth2UserRequest객체로 소셜에 사용자 정보를 요청해서 OAuth2User(사용자 정보)객체를 획득한다.
 		OAuth2User oAuth2User = delegate.loadUser(userRequest);
