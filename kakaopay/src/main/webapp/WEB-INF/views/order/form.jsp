@@ -22,7 +22,7 @@
     <div class="row mb-3">
         <div class="col">
             <p>주문도서 정보를 확인하세요.</p>
-            <form id="form-order" method="post" action="/order/insert">
+            <form id="form-order">
             	<sec:csrfInput/>
             	<input type="hidden" name="no" value="${book.no }">
 	            <table class="table">
