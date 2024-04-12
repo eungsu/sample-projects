@@ -56,7 +56,9 @@
 <script type="text/javascript">
 $(function() {
 	$("#btn-pay-ready").click(function(e) {
-		
+                // OrderController로 ajax 요청을 보낸다.
+                // OrderController의 요청핸들러 메소드에서는 kakao로 결재준비 요청을 보내고, 결재준비 응답을 받아서 ajax응답으로 보낸다.
+                // 결재준비 응답에는 결재번호(tid)와 사용자 웹 브라우저에서 카카오 결재 화면을 요청하는 URL(next_redirect_pc_url)이 포함되어 있다.
 		$.ajax({
 			type: 'get',
 			url: '/order/pay/ready',
@@ -66,6 +68,7 @@ $(function() {
 				totalPrice: $("#total-price").attr("data-total-price"),
 			},
 			success:function(response) {
+                                // response => {tid:"xxx", next_redirect_pc_url:"카카오결재화면URL"}
 				location.href= response.next_redirect_pc_url;
 			}
 		});
